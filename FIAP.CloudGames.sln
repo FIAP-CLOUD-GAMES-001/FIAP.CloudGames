@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36203.30
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.CloudGames.Api", "src\FIAP.CloudGames.Api\FIAP.CloudGames.Api.csproj", "{FB015211-DAE3-4929-4EC2-7E44D95CD430}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.CloudGames.Domain", "src\FIAP.CloudGames.Domain\FIAP.CloudGames.Domain.csproj", "{B065FD95-A865-4A68-8535-DEC8AB6535C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.CloudGames.infrastructure", "src\FIAP.CloudGames.infrastructure\FIAP.CloudGames.infrastructure.csproj", "{243DB127-014E-4035-9385-E7846475A1BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.CloudGames.Service", "src\FIAP.CloudGames.Service\FIAP.CloudGames.Service.csproj", "{5D9F79D3-5AE7-4A0E-96E2-F787DB4BF5A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB015211-DAE3-4929-4EC2-7E44D95CD430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB015211-DAE3-4929-4EC2-7E44D95CD430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB015211-DAE3-4929-4EC2-7E44D95CD430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB015211-DAE3-4929-4EC2-7E44D95CD430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B065FD95-A865-4A68-8535-DEC8AB6535C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B065FD95-A865-4A68-8535-DEC8AB6535C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B065FD95-A865-4A68-8535-DEC8AB6535C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B065FD95-A865-4A68-8535-DEC8AB6535C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{243DB127-014E-4035-9385-E7846475A1BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{243DB127-014E-4035-9385-E7846475A1BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{243DB127-014E-4035-9385-E7846475A1BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{243DB127-014E-4035-9385-E7846475A1BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D9F79D3-5AE7-4A0E-96E2-F787DB4BF5A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D9F79D3-5AE7-4A0E-96E2-F787DB4BF5A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D9F79D3-5AE7-4A0E-96E2-F787DB4BF5A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D9F79D3-5AE7-4A0E-96E2-F787DB4BF5A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4679456-D537-4500-8692-D05D7B3CBD14}
+	EndGlobalSection
+EndGlobal
