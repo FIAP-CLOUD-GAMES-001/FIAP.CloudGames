@@ -15,10 +15,4 @@ public static class ControllerResponseExtensions
         var response = ApiResponse<string>.Fail(message, errors);
         return controller.StatusCode((int)statusCode, response);
     }
-
-    public static IActionResult ApiFail(this ControllerBase controller, string message, List<string>? errors = null, int statusCode = 400)
-    {
-        var response = ApiResponse<string>.Fail(message, errors);
-        return controller.StatusCode(statusCode, response);
-    }
 }
