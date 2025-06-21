@@ -1,4 +1,7 @@
+using FIAP.CloudGames.Api.Extensions;
+using FIAP.CloudGames.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace FIAP.CloudGames.Api.Controllers
 {
@@ -19,15 +22,22 @@ namespace FIAP.CloudGames.Api.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [ProducesResponseType(typeof(ApiResponse<WeatherForecast[]>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
+        public IActionResult Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+
+            if (result is null)
+                return this.ApiFail("Exemplo de retorno em caso de falha.", statusCode: HttpStatusCode.NotFound);
+
+            return this.ApiOk(result);
         }
     }
 }

@@ -6,29 +6,24 @@ namespace FIAP.CloudGames.Api.Extensions;
 
 public static class BuilderExtension
 {
-    public static WebApplicationBuilder AddProjectServices(this WebApplicationBuilder builder)
+    public static void AddProjectServices(this WebApplicationBuilder builder)
     {
-        ConfigureDbContext(builder);
-
+        builder.ConfigureDbContext();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-
-        ConfigureSwagger(builder);
-
-        return builder;
+        builder.ConfigureSwagger();
     }
 
-    private static void ConfigureDbContext(WebApplicationBuilder builder)
+    private static void ConfigureDbContext(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
     }
-
-    private static void ConfigureSwagger(WebApplicationBuilder builder)
+    private static void ConfigureSwagger(this WebApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("FiapCloudGamesApi v1", new OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "FiapCloudGamesApi",
                 Version = "v1",
