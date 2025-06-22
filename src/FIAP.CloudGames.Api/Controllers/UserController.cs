@@ -5,6 +5,7 @@ using FIAP.CloudGames.Domain.Requests.User;
 using FIAP.CloudGames.Domain.Responses.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace FIAP.CloudGames.Api.Controllers;
 [Route("api/[controller]")]
@@ -23,6 +24,6 @@ public class UserController(IUserService service) : ControllerBase
             return this.ApiFail("Invalid request.");
 
         var userCreated = await service.RegisterAsync(request);
-        return this.ApiOk(userCreated, "User registered successfully.");
+        return this.ApiOk(userCreated, "User registered successfully.", HttpStatusCode.Created);
     }
 }
