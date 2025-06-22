@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace FIAP.CloudGames.Domain.Entities;
-public class User
+public class UserEntity
 {
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
@@ -11,8 +11,8 @@ public class User
     public Role Role { get; private set; } = Role.User;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-    private User() { }
-    public User(string name, string email, string plainPassword, Role role = Role.User)
+    private UserEntity() { }
+    public UserEntity(string name, string email, string plainPassword, Role role = Role.User)
     {
         Name = name.Trim();
         Email = email.Trim().ToLowerInvariant();
@@ -22,12 +22,12 @@ public class User
 
     private string HashPassword(string plainPassword)
     {
-        return new PasswordHasher<User>().HashPassword(this, plainPassword);
+        return new PasswordHasher<UserEntity>().HashPassword(this, plainPassword);
     }
 
     public bool VerifyPassword(string plainPassword)
     {
-        var result = new PasswordHasher<User>()
+        var result = new PasswordHasher<UserEntity>()
             .VerifyHashedPassword(this, PasswordHash, plainPassword);
         return result == PasswordVerificationResult.Success;
     }

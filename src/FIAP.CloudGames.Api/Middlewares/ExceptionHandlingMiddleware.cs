@@ -1,4 +1,6 @@
-﻿using FIAP.CloudGames.Domain.Models;
+﻿using FIAP.CloudGames.Domain.Exceptions;
+using FIAP.CloudGames.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace FIAP.CloudGames.Api.Middlewares;
@@ -18,9 +20,24 @@ public class ExceptionHandlingMiddleware(
             logger.LogError(ex, "Unhandled exception");
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-            var response = ApiResponse<string>.Fail("Erro interno no servidor.");
+            context.Response.StatusCode = ex switch
+            {
+                AuthenticationException => StatusCodes.Status401Unauthorized,
+                DomainException => StatusCodes.Status409Conflict,
+                ValidationException => StatusCodes.Status400BadRequest,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            var message = ex switch
+            {
+                AuthenticationException => "Falha de autenticação.",
+                DomainException => "Erro de regra de negócio.",
+                ValidationException => "Erro de validação.",
+                _ => "Erro interno no servidor."
+            };
+
+            var response = ApiResponse<string>.Fail(message, [ex.Message]);
             var json = JsonSerializer.Serialize(response);
 
             await context.Response.WriteAsync(json);

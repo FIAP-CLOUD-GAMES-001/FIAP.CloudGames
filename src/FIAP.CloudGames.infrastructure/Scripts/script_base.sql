@@ -22,8 +22,11 @@ CREATE TABLE [Users] (
 );
 GO
 
+CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+GO
+
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20250622160702_InitialCreate', N'8.0.17');
+VALUES (N'20250622171013_InitialCreate', N'8.0.17');
 GO
 
 COMMIT;

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FIAP.CloudGames.infrastructure.Data.Mappers;
-public class UserMap : IEntityTypeConfiguration<User>
+public class UserMap : IEntityTypeConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.ToTable("Users").HasKey(u => u.Id);
 
@@ -27,5 +27,7 @@ public class UserMap : IEntityTypeConfiguration<User>
         builder.Property(u => u.CreatedAt)
             .IsRequired()
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.HasIndex(x => x.Email).IsUnique();
     }
 }
