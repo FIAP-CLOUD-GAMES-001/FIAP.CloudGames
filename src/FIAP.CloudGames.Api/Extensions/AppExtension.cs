@@ -9,6 +9,7 @@ public static class AppExtension
     {
         app.UseCustomSwagger();
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers();

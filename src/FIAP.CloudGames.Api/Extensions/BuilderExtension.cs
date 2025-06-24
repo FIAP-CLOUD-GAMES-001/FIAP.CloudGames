@@ -1,6 +1,14 @@
-﻿using FIAP.CloudGames.infrastructure.Data;
+﻿using FIAP.CloudGames.Domain.Interfaces.Repositories;
+using FIAP.CloudGames.Domain.Interfaces.Services;
+using FIAP.CloudGames.infrastructure.Data;
+using FIAP.CloudGames.infrastructure.Repositories;
+using FIAP.CloudGames.Service.Auth;
+using FIAP.CloudGames.Service.User;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace FIAP.CloudGames.Api.Extensions;
 
@@ -9,11 +17,47 @@ public static class BuilderExtension
     public static void AddProjectServices(this WebApplicationBuilder builder)
     {
         builder.ConfigureDbContext();
+        builder.ConfigureJwt();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.ConfigureSwagger();
+        builder.ConfigureDependencyInjectionRepository();
+        builder.ConfigureDependencyInjectionService();
     }
 
+    private static void ConfigureDependencyInjectionService(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+    }
+    private static void ConfigureDependencyInjectionRepository(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+    }
+    private static void ConfigureJwt(this WebApplicationBuilder builder)
+    {
+        var configuration = builder.Configuration.GetSection("Jwt");
+
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Issuer"],
+                    ValidAudience = configuration["Audience"],
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Key"]!))
+                };
+            });
+
+        builder.Services.AddAuthorization();
+        builder.Services.AddScoped<TokenService>();
+    }
     private static void ConfigureDbContext(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<DataContext>(options =>

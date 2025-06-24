@@ -5,9 +5,10 @@ using System.Net;
 namespace FIAP.CloudGames.Api.Extensions;
 public static class ControllerResponseExtensions
 {
-    public static IActionResult ApiOk<T>(this ControllerBase controller, T data, string? message = null)
+    public static IActionResult ApiOk<T>(this ControllerBase controller, T data, string? message = null, HttpStatusCode statusCode = HttpStatusCode.OK)
     {
-        return controller.Ok(ApiResponse<T>.Ok(data, message));
+        var response = ApiResponse<T>.Ok(data, message);
+        return controller.StatusCode((int)statusCode, response);
     }
 
     public static IActionResult ApiFail(this ControllerBase controller, string message, List<string>? errors = null, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
