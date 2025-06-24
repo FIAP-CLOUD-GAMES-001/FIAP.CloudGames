@@ -13,7 +13,7 @@ public class UserService(IUserRepository repository) : IUserService
         var user = new UserEntity(request.Name, request.Email, request.Password);
 
         if (await repository.EmailExistsAsync(user.Email))
-            throw new DomainException("Usuário já cadastrado.");
+            throw new ConflictException("Usuário já cadastrado.");
 
         await repository.AddAsync(user);
 

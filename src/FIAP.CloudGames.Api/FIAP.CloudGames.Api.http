@@ -1,6 +1,21 @@
-@FIAP.CloudGames.Api_HostAddress = http://localhost:5191
+@baseUrl = http://localhost:32768
 
-GET {{FIAP.CloudGames.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Login
+POST {{baseUrl}}/api/Auth/login
+Content-Type: application/json
 
-###
+{
+  "email": "teste@gmail.com",
+  "password": "teste123"
+}
+
+### Criar usuário
+POST {{baseUrl}}/api/User/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJsdWNhc0BnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzUwODE1NDYzLCJpc3MiOiJGSUFQLkNsb3VkR2FtZXMiLCJhdWQiOiJGSUFQLkNsb3VkR2FtZXMifQ.urURcJBlsXsEVAU3FssgUPEng0U5NOVUu5_YTM6kNeA
+
+{
+  "name": "fiap",
+  "email": "fiap@gmail.com",
+  "password": "fiap123"
+}

@@ -23,17 +23,19 @@ public class ExceptionHandlingMiddleware(
 
             context.Response.StatusCode = ex switch
             {
-                AuthenticationException => StatusCodes.Status401Unauthorized,
-                DomainException => StatusCodes.Status409Conflict,
                 ValidationException => StatusCodes.Status400BadRequest,
+                AuthenticationException => StatusCodes.Status401Unauthorized,
+                DomainException => StatusCodes.Status400BadRequest,
+                ConflictException => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError
             };
 
             var message = ex switch
             {
+                ValidationException => "Erro de validação.",
                 AuthenticationException => "Falha de autenticação.",
                 DomainException => "Erro de regra de negócio.",
-                ValidationException => "Erro de validação.",
+                ConflictException => "O dado informado já existe no sistema.",
                 _ => "Erro interno no servidor."
             };
 

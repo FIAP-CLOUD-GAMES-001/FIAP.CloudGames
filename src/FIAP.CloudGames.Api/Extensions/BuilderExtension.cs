@@ -50,8 +50,7 @@ public static class BuilderExtension
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["Issuer"],
                     ValidAudience = configuration["Audience"],
-                    IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Key"]!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Key"]!))
                 };
             });
 
