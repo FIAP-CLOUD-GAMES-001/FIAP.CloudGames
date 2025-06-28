@@ -29,10 +29,14 @@ public static class BuilderExtension
     {
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        
+
     }
     private static void ConfigureDependencyInjectionRepository(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+
     }
     private static void ConfigureJwt(this WebApplicationBuilder builder)
     {
