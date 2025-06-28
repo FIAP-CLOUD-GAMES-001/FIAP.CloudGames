@@ -23,8 +23,14 @@ public static class BuilderExtension
         builder.ConfigureSwagger();
         builder.ConfigureDependencyInjectionRepository();
         builder.ConfigureDependencyInjectionService();
+        builder.ConfigureHealthChecks();
     }
 
+    private static void ConfigureHealthChecks(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHealthChecks()
+            .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!, name: "sqlserver", timeout: TimeSpan.FromSeconds(5));
+    }
     private static void ConfigureDependencyInjectionService(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IAuthService, AuthService>();

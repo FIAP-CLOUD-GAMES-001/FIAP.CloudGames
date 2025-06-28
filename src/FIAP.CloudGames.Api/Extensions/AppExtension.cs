@@ -13,6 +13,7 @@ public static class AppExtension
         app.UseAuthorization();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers();
+        app.MapHealthChecks("/health");
     }
 
     private static void UseCustomSwagger(this WebApplication app)
