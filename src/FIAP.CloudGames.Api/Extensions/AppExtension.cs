@@ -1,4 +1,6 @@
 ﻿using FIAP.CloudGames.Api.Middlewares;
+using FIAP.CloudGames.infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace FIAP.CloudGames.Api.Extensions;
@@ -13,6 +15,7 @@ public static class AppExtension
         app.UseAuthorization();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers();
+        app.GenerateMigrations();
     }
 
     private static void UseCustomSwagger(this WebApplication app)
@@ -33,5 +36,12 @@ public static class AppExtension
                 SubmitMethod.Patch
             ]);
         });
+    }
+
+    private static void GenerateMigrations(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+        dbContext.Database.Migrate();
     }
 }
