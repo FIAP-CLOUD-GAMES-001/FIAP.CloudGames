@@ -16,6 +16,7 @@ public static class AppExtension
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers();
         app.GenerateMigrations();
+        app.MapHealthChecks("/health");
     }
 
     private static void UseCustomSwagger(this WebApplication app)
