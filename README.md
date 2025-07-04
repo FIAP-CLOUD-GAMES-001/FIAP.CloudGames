@@ -39,6 +39,11 @@ Desenvolver uma API REST que permita:
 docker-compose up -d
 ```
 
+O docker compose vai subir um banco SqlServer automaticamente no docker com as seguintes configurações de acesso:
+```bash
+Server=host.docker.internal,1433;Database=CloudGames;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+```
+
 ### 3. Executar a API
 
 ```bash
