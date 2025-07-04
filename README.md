@@ -39,21 +39,7 @@ Desenvolver uma API REST que permita:
 docker-compose up -d
 ```
 
-### 3. Gerar Migrations
-
-Substitua `<MigrationName>` por um nome descritivo (ex: `InitialCreate`):
-
-```bash
-dotnet ef migrations add <MigrationName> --project ../FIAP.CloudGames.Infrastructure --startup-project ../FIAP.CloudGames.Api
-```
-
-### 4. Atualizar o Banco de Dados
-
-```bash
-dotnet ef database update --context DataContext --startup-project ../FIAP.CloudGames.Api
-```
-
-### 5. Executar a API
+### 3. Executar a API
 
 ```bash
 dotnet run --project ../FIAP.CloudGames.Api
