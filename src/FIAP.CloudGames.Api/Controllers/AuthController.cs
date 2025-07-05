@@ -14,10 +14,19 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
 public class AuthController(IAuthService service) : ControllerBase
 {
+    /// <summary>
+    /// Authenticates a user based on the provided login request and returns the result.
+    /// </summary>
+    /// <remarks>This method processes the login request by delegating authentication to the underlying
+    /// service. If the login is successful, the method returns an HTTP 200 response with the authenticated user
+    /// information.</remarks>
+    /// <param name="request">The login request containing the user's credentials. Must not be null.</param>
+    /// <returns>An <see cref="IActionResult"/> containing the authentication result and a success message if the login is
+    /// successful.</returns>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var user = await service.LoginAsync(request);
-        return this.ApiOk(user, "Login realizado com sucesso.");
+        return this.ApiOk(user, "Login successful.");
     }
 }
