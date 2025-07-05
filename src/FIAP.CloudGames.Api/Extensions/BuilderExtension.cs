@@ -17,6 +17,7 @@ public static class BuilderExtension
 {
     public static void AddProjectServices(this WebApplicationBuilder builder)
     {
+        builder.UseJsonFileConfiguration();
         builder.ConfigureDbContext();
         builder.ConfigureJwt();
         builder.Services.AddControllers();
@@ -112,5 +113,14 @@ public static class BuilderExtension
     private static void ConfigureValidators(this WebApplicationBuilder builder)
     {
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+    }
+    
+    public static void UseJsonFileConfiguration(this WebApplicationBuilder builder)
+    {
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
     }
 }
