@@ -39,7 +39,8 @@ public class UserService(IUserRepository repository) : IUserService
     public async Task<UserResponse> UpdateUserRoleAsync(int userId, Role newRole)
     {
         var user = await repository.GetByIdAsync(userId)
-                   ?? throw new Exception("User not found");
+                   ?? throw new NotFoundException($"User with ID {userId} was not found.");
+
         user.UpdateRole(newRole);
         await repository.UpdateAsync(user);
         return new UserResponse(user.Id, user.Name, user.Email, user.Role);
