@@ -44,7 +44,40 @@ O docker compose vai subir um banco SqlServer automaticamente no docker com as s
 Server=host.docker.internal,1433;Database=CloudGames;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
 ```
 
-### 3. Executar a API
+Segue trecho formal e direto para inclusão no **README**:
+
+---
+
+### 3. Configuração de Segredos Locais
+
+Para garantir a segurança dos dados sensíveis do administrador inicial, as credenciais de seed devem ser armazenadas em um arquivo **não versionado** chamado `appsettings.Secrets.json`.
+
+Siga os passos abaixo:
+
+1️. Copie o arquivo de exemplo:
+
+```bash
+cp appsettings.Secrets.json.example appsettings.Secrets.json
+```
+
+2️. Edite o arquivo `appsettings.Secrets.json` com os dados reais do usuário administrador:
+
+```json
+{
+  "SeedAdmin": {
+    "Email": "replace-with-admin-email@domain.com",
+    "Password": "replace-with-strong-password"
+  }
+}
+```
+
+**Importante:** O arquivo `appsettings.Secrets.json` está no `.gitignore` e **não deve ser versionado**.
+
+Dessa forma, cada desenvolvedor local poderá configurar suas próprias credenciais de seed de forma segura, sem risco de vazamento no repositório.
+
+---
+
+### 4. Executar a API
 
 ```bash
 dotnet run --project ../FIAP.CloudGames.Api
