@@ -31,4 +31,9 @@ public class UserEntity
             .VerifyHashedPassword(this, PasswordHash, plainPassword);
         return result == PasswordVerificationResult.Success;
     }
+
+    public void UpdateRole(Role role)
+    {
+        Role = role;
+    }
 }

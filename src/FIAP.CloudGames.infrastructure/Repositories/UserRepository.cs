@@ -29,4 +29,16 @@ public class UserRepository(DataContext context) : IUserRepository
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<UserEntity?> GetByIdAsync(int id)
+    {
+        return await context.Users
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    public async Task UpdateAsync(UserEntity user)
+    {
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+    }
 }
