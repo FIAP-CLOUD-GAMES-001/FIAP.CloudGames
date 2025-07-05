@@ -55,8 +55,13 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateUserFromAdmin([FromBody] RegisterUserRequest request)
     {
-        if (request is null)
-            return this.ApiFail("Requisição inválida.");
+        ValidationResult validation = await validator.ValidateAsync(request);
+
+        if (!validation.IsValid)
+        {
+            var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
+            return this.ApiFail("Validation failed.", errors);
+        }
 
         var created = await service.RegisterAsync(request);
         return this.ApiOk(created, "Admin created successfully.", HttpStatusCode.Created);
