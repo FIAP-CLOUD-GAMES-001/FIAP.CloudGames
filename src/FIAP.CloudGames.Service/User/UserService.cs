@@ -21,10 +21,13 @@ public class UserService(IUserRepository repository) : IUserService
         return new UserResponse(user.Id, user.Name, user.Email, user.Role);
     }
 
-    public async Task<UserResponse?> GetByIdAsync(int id)
+    public async Task<UserResponse> GetByIdAsync(int id)
     {
         var user = await repository.GetByIdAsync(id);
-        return user is null ? null : new UserResponse(user.Id, user.Name, user.Email, user.Role);
+
+        return user is null
+            ? throw new NotFoundException($"User with ID {id} was not found.")
+            : new UserResponse(user.Id, user.Name, user.Email, user.Role);
     }
 
     public async Task<List<UserResponse>> GetAllUsersAsync()

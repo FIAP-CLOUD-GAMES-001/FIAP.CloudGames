@@ -27,16 +27,18 @@ public class ExceptionHandlingMiddleware(
                 AuthenticationException => StatusCodes.Status401Unauthorized,
                 DomainException => StatusCodes.Status400BadRequest,
                 ConflictException => StatusCodes.Status409Conflict,
+                NotFoundException => StatusCodes.Status404NotFound,
                 _ => StatusCodes.Status500InternalServerError
             };
 
             var message = ex switch
             {
-                ValidationException => "Erro de validação.",
-                AuthenticationException => "Falha de autenticação.",
-                DomainException => "Erro de regra de negócio.",
-                ConflictException => "O dado informado já existe no sistema.",
-                _ => "Erro interno no servidor."
+                ValidationException => "Validation error.",
+                AuthenticationException => "Authentication failure.",
+                DomainException => "Business rule error.",
+                ConflictException => "The provided data already exists in the system.",
+                NotFoundException => "The requested resource was not found.",
+                _ => "Internal server error."
             };
 
             var response = ApiResponse<string>.Fail(message, [ex.Message]);

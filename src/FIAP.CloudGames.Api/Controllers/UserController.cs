@@ -77,8 +77,6 @@ public class UserController(IUserService service) : ControllerBase
             return this.ApiFail("Invalid token.", null, HttpStatusCode.Unauthorized);
 
         var user = await service.GetByIdAsync(userId);
-        if (user is null)
-            return this.ApiFail("User not found.", null, HttpStatusCode.NotFound);
 
         return this.ApiOk(user, "Profile retrieved successfully.");
     }
