@@ -4,6 +4,7 @@ using FIAP.CloudGames.infrastructure.Data;
 using FIAP.CloudGames.infrastructure.Repositories;
 using FIAP.CloudGames.Service.Auth;
 using FIAP.CloudGames.Service.User;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,7 @@ public static class BuilderExtension
         builder.ConfigureDependencyInjectionRepository();
         builder.ConfigureDependencyInjectionService();
         builder.ConfigureHealthChecks();
+        builder.ConfigureValidators();
     }
 
     private static void ConfigureHealthChecks(this WebApplicationBuilder builder)
@@ -105,5 +107,10 @@ public static class BuilderExtension
                 }
             });
         });
+    }
+
+    private static void ConfigureValidators(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
     }
 }
