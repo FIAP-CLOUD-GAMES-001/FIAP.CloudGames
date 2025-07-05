@@ -19,4 +19,10 @@ public class UserService(IUserRepository repository) : IUserService
 
         return new UserResponse(user.Id, user.Name, user.Email);
     }
+
+    public async Task<List<UserResponse>> GetAllUsersAsync()
+    {
+        var users = await repository.ListAllAsync();
+        return [.. users.Select(x => new UserResponse(x.Id, x.Name, x.Email))];
+    }
 }

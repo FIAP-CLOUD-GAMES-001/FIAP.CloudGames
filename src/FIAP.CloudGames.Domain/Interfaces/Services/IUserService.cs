@@ -5,4 +5,5 @@ namespace FIAP.CloudGames.Domain.Interfaces.Services;
 public interface IUserService
 {
     Task<UserResponse> RegisterAsync(RegisterUserRequest request);
+    Task<List<UserResponse>> GetAllUsersAsync();
 }

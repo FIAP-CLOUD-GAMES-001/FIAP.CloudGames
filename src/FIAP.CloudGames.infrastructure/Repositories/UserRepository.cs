@@ -22,4 +22,11 @@ public class UserRepository(DataContext context) : IUserRepository
         return context.Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    public async Task<List<UserEntity>> ListAllAsync()
+    {
+        return await context.Users
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }
