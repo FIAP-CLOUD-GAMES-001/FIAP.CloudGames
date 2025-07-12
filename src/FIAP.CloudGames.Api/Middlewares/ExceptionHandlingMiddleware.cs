@@ -23,6 +23,7 @@ public class ExceptionHandlingMiddleware(
 
             context.Response.StatusCode = ex switch
             {
+                AggregateValidationException => StatusCodes.Status400BadRequest,
                 ValidationException => StatusCodes.Status400BadRequest,
                 AuthenticationException => StatusCodes.Status401Unauthorized,
                 DomainException => StatusCodes.Status400BadRequest,
@@ -33,6 +34,7 @@ public class ExceptionHandlingMiddleware(
 
             var message = ex switch
             {
+                AggregateValidationException => "One or more validation errors occurred.",
                 ValidationException => "Validation error.",
                 AuthenticationException => "Authentication failure.",
                 DomainException => "Business rule error.",
@@ -41,10 +43,15 @@ public class ExceptionHandlingMiddleware(
                 _ => "Internal server error."
             };
 
-            var response = ApiResponse<string>.Fail(message, [ex.Message]);
+            var response = ApiResponse<string>.Fail(message, GetAggregateValidations(ex));
             var json = JsonSerializer.Serialize(response);
 
             await context.Response.WriteAsync(json);
         }
+    }
+
+    public static List<string> GetAggregateValidations(Exception ex)
+    {
+        return ex is AggregateValidationException aggEx ? aggEx.Errors.ToList() : [ex.Message];
     }
 }
