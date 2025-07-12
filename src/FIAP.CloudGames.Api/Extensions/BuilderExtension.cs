@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 namespace FIAP.CloudGames.Api.Extensions;
@@ -107,6 +108,9 @@ public static class BuilderExtension
                     Array.Empty<string>()
                 }
             });
+
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
     }
 
@@ -114,7 +118,7 @@ public static class BuilderExtension
     {
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
     }
-    
+
     public static void UseJsonFileConfiguration(this WebApplicationBuilder builder)
     {
         builder.Configuration
