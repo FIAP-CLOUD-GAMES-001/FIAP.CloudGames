@@ -1,5 +1,6 @@
 ﻿using FIAP.CloudGames.Domain.Entities;
 using FIAP.CloudGames.Domain.Enums;
+using FIAP.CloudGames.Domain.Exceptions;
 using FIAP.CloudGames.Domain.Interfaces.Repositories;
 using FIAP.CloudGames.Domain.Requests.User;
 using FIAP.CloudGames.Service.User;
@@ -7,7 +8,7 @@ using Moq;
 
 namespace FIAP.CloudGames.Test
 {
-    public class TesteUsuario
+    public class TesteServicoUsuario
     {
         [Fact]
         public void Deve_Criar_UserEntity_Com_Valores_Corretos()
@@ -83,10 +84,10 @@ namespace FIAP.CloudGames.Test
             var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
 
             // Act & Assert
-            var excecao = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                service.RegisterAsync(request));
+            var ex = await Assert.ThrowsAsync<ConflictException>(() =>
+            service.RegisterAsync(request));
 
-            Assert.Equal("E-mail já cadastrado.", excecao.Message);
+            Assert.Equal("Usuário já cadastrado.", ex.Message);
             mockRepo.Verify(r => r.AddAsync(It.IsAny<UserEntity>()), Times.Never);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using FIAP.CloudGames.Domain.Entities;
 using FIAP.CloudGames.Domain.Exceptions;
+using FIAP.CloudGames.Domain.Interfaces.Auth;
 using FIAP.CloudGames.Domain.Interfaces.Repositories;
 using FIAP.CloudGames.Domain.Interfaces.Services;
 using FIAP.CloudGames.Domain.Requests.Auth;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FIAP.CloudGames.Service.Auth;
 
-public class AuthService(IUserRepository repository, TokenService tokens) : IAuthService
+public class AuthService(IUserRepository repository, ITokenService tokens) : IAuthService
 {
     private readonly PasswordHasher<UserEntity> _hasher = new();
 

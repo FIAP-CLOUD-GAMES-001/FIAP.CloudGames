@@ -1,4 +1,5 @@
 ﻿using FIAP.CloudGames.Domain.Entities;
+using FIAP.CloudGames.Domain.Interfaces.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,7 +10,7 @@ namespace FIAP.CloudGames.Service.Auth;
 /// <summary>
 /// Vamos utilizar Enum para definir os roles de usuário nesse inicio, mas o ideal é utilizar uma tabela de roles no banco de dados.
 /// </summary>
-public class TokenService(IConfiguration configuration)
+public class TokenService(IConfiguration configuration) : ITokenService
 {
     public string Generate(UserEntity user)
     {
