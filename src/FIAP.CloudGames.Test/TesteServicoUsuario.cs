@@ -35,7 +35,7 @@ namespace FIAP.CloudGames.Test
         {
             var usuario = new UserEntity("Carlos", "carlos@email.com", "abc123", Role.User);
 
-            Assert.False(usuario.VerifyPassword("senhaerrada"));
+            Assert.False(usuario.VerifyPassword("*senhaerrada*"));
         }
 
         [Fact]

@@ -17,6 +17,7 @@ namespace FIAP.CloudGames.Test
 {
     public class TesteServicoAutenticacao
     {
+
         [Fact]
         public async Task Deve_RetornarToken_QuandoCredenciaisForemValidas()
         {
