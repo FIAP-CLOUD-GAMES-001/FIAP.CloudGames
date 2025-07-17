@@ -1,4 +1,5 @@
-﻿using FIAP.CloudGames.Domain.Interfaces.Repositories;
+﻿using FIAP.CloudGames.Domain.Interfaces.Auth;
+using FIAP.CloudGames.Domain.Interfaces.Repositories;
 using FIAP.CloudGames.Domain.Interfaces.Services;
 using FIAP.CloudGames.infrastructure.Data;
 using FIAP.CloudGames.infrastructure.Repositories;
@@ -9,8 +10,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using System.Reflection;
 using System.Text;
+
 
 namespace FIAP.CloudGames.Api.Extensions;
 
@@ -21,6 +25,7 @@ public static class BuilderExtension
         builder.UseJsonFileConfiguration();
         builder.ConfigureDbContext();
         builder.ConfigureJwt();
+        builder.ConfigureLogMongo();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.ConfigureSwagger();
@@ -29,7 +34,24 @@ public static class BuilderExtension
         builder.ConfigureHealthChecks();
         builder.ConfigureValidators();
     }
+    private static void ConfigureLogMongo(this WebApplicationBuilder builder)
+    {
 
+        var mongoConnection = builder.Configuration.GetConnectionString("MongoDB");
+
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.MongoDB(mongoConnection, collectionName: "logs")
+            .CreateLogger();
+
+        Log.Information("✅ Conectado com sucesso ao MongoDB!" + DateTime.UtcNow);
+
+        builder.Host.UseSerilog();
+    }
     private static void ConfigureHealthChecks(this WebApplicationBuilder builder)
     {
         builder.Services.AddHealthChecks()
@@ -39,6 +61,7 @@ public static class BuilderExtension
     {
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<ITokenService, TokenService>(); 
     }
     private static void ConfigureDependencyInjectionRepository(this WebApplicationBuilder builder)
     {

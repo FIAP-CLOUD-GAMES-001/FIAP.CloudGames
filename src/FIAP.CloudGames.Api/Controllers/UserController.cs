@@ -19,7 +19,7 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status403Forbidden)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
-public class UserController(IUserService service, IValidator<RegisterUserRequest> validator) : ControllerBase
+public class UserController(IUserService service, IValidator<RegisterUserRequest> validator, ILogger<AuthController> logger) : ControllerBase
 {
     /// <summary>
     /// Registers a new user with the provided information.
@@ -36,16 +36,19 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
     {
-        ValidationResult validation = await validator.ValidateAsync(request);
+        
+            ValidationResult validation = await validator.ValidateAsync(request);
 
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
-            return this.ApiFail("Validation failed.", errors);
-        }
+            if (!validation.IsValid)
+            {
+                var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
+                return this.ApiFail("Validation failed.", errors);
+            }
 
-        var userCreated = await service.RegisterAsync(request);
-        return this.ApiOk(userCreated, "User registered successfully.", HttpStatusCode.Created);
+            var userCreated = await service.RegisterAsync(request);
+            return this.ApiOk(userCreated, "User registered successfully.", HttpStatusCode.Created);
+       
+       
     }
 
     /// <summary>

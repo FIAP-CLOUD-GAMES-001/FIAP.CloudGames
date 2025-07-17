@@ -1,5 +1,6 @@
 ﻿using FIAP.CloudGames.Domain.Exceptions;
 using FIAP.CloudGames.Domain.Models;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
@@ -17,7 +18,8 @@ public class ExceptionHandlingMiddleware(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unhandled exception");
+         
+            
 
             context.Response.ContentType = "application/json";
 
@@ -43,7 +45,7 @@ public class ExceptionHandlingMiddleware(
 
             var response = ApiResponse<string>.Fail(message, [ex.Message]);
             var json = JsonSerializer.Serialize(response);
-
+            logger.LogError(ex, context.Response.StatusCode.ToString(), context.Request.Path);
             await context.Response.WriteAsync(json);
         }
     }

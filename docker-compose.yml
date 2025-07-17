@@ -11,9 +11,21 @@ services:
       - sql_data:/var/opt/mssql
     networks:
       - cloudgames-network
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - cloudgames-network
 
 volumes:
   sql_data:
+  mongo_data:
+
 
 networks:
   cloudgames-network:
