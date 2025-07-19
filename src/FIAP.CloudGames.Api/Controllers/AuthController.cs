@@ -13,7 +13,7 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
-public class AuthController(IAuthService service, ILogger<AuthController> logger) : ControllerBase
+public class AuthController(IAuthService service) : ControllerBase
 {
     /// <summary>
     /// Authenticates a user based on the provided login request and returns the result.
@@ -27,15 +27,7 @@ public class AuthController(IAuthService service, ILogger<AuthController> logger
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var user = await service.LoginAsync(request);
-            return this.ApiOk(user, "Login successful.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message.ToString(), ex);
-            throw;
-        }
+        var user = await service.LoginAsync(request);
+        return this.ApiOk(user, "Login successful.");
     }
 }

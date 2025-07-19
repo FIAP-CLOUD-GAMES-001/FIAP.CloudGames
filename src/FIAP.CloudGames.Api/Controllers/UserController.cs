@@ -20,7 +20,7 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status403Forbidden)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
-public class UserController(IUserService service, IValidator<RegisterUserRequest> validator, ILogger<AuthController> logger) : ControllerBase
+public class UserController(IUserService service, IValidator<RegisterUserRequest> validator) : ControllerBase
 {
     /// <summary>
     /// Registers a new user with the provided information.
