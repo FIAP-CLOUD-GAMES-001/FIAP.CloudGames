@@ -6,6 +6,7 @@ using FIAP.CloudGames.Domain.Responses.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.CloudGames.Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 [ProducesResponseType(typeof(ApiResponse<AuthResponse>), StatusCodes.Status200OK)]

@@ -12,6 +12,7 @@ using System.Net;
 using System.Security.Claims;
 
 namespace FIAP.CloudGames.Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
@@ -55,7 +56,7 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     /// returns a successful response containing the list of users if the operation completes successfully.</remarks>
     /// <returns>An <see cref="IActionResult"/> containing an <see cref="ApiResponse{T}"/> with a list of <see
     /// cref="UserResponse"/> objects  and a success message. Returns a 200 OK status code on success.</returns>
-    [HttpGet]
+    [HttpGet("users")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<List<UserResponse>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllUsers()

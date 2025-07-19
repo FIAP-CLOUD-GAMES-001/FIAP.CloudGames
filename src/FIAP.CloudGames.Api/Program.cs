@@ -1,4 +1,4 @@
-using FIAP.CloudGames.Api.Extensions;
+﻿using FIAP.CloudGames.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 BuilderExtension.AddProjectServices(builder);

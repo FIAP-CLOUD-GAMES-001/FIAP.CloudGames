@@ -1,6 +1,7 @@
 ﻿using FIAP.CloudGames.Domain.Exceptions;
 using FIAP.CloudGames.Domain.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Text.Json;
 
 namespace FIAP.CloudGames.Api.Middlewares;
@@ -17,8 +18,6 @@ public class ExceptionHandlingMiddleware(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unhandled exception");
-
             context.Response.ContentType = "application/json";
 
             context.Response.StatusCode = ex switch
@@ -45,7 +44,7 @@ public class ExceptionHandlingMiddleware(
 
             var response = ApiResponse<string>.Fail(message, GetAggregateValidations(ex));
             var json = JsonSerializer.Serialize(response);
-
+            logger.LogError(ex, ((HttpStatusCode)context.Response.StatusCode).ToString(), context.Request.Path);
             await context.Response.WriteAsync(json);
         }
     }

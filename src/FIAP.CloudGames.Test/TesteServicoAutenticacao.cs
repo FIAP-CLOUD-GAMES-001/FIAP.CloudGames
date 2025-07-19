@@ -5,72 +5,64 @@ using FIAP.CloudGames.Domain.Interfaces.Auth;
 using FIAP.CloudGames.Domain.Interfaces.Repositories;
 using FIAP.CloudGames.Domain.Requests.Auth;
 using FIAP.CloudGames.Service.Auth;
-using Microsoft.AspNetCore.Identity;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FIAP.CloudGames.Test
+namespace FIAP.CloudGames.Test;
+
+public class TesteServicoAutenticacao
 {
-    public class TesteServicoAutenticacao
+    [Fact]
+    public async Task Deve_RetornarToken_QuandoCredenciaisForemValidas()
     {
+        var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", Role.User);
 
-        [Fact]
-        public async Task Deve_RetornarToken_QuandoCredenciaisForemValidas()
-        {
-            var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", Role.User);
+        var mockRepo = new Mock<IUserRepository>();
+        mockRepo.Setup(r => r.GetByEmailAsync(usuario.Email)).ReturnsAsync(usuario);
 
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.GetByEmailAsync(usuario.Email)).ReturnsAsync(usuario);
+        var mockTokenService = new Mock<ITokenService>();
+        mockTokenService.Setup(t => t.Generate(usuario)).Returns("fake-jwt-token");
+        mockTokenService.Setup(t => t.GetExpirationDate("fake-jwt-token")).Returns(DateTime.UtcNow.AddHours(2));
 
-            var mockTokenService = new Mock<ITokenService>();
-            mockTokenService.Setup(t => t.Generate(usuario)).Returns("fake-jwt-token");
-            mockTokenService.Setup(t => t.GetExpirationDate("fake-jwt-token")).Returns(DateTime.UtcNow.AddHours(2));
+        var service = new AuthService(mockRepo.Object, mockTokenService.Object);
 
-            var service = new AuthService(mockRepo.Object, mockTokenService.Object);
+        var request = new LoginRequest(usuario.Email, "Senha@123");
 
-            var request = new LoginRequest(usuario.Email, "Senha@123");
+        var response = await service.LoginAsync(request);
 
-            var response = await service.LoginAsync(request);
+        Assert.NotNull(response);
+        Assert.Equal("fake-jwt-token", response.Token);
+        Assert.True(response.ExpireIn > DateTime.UtcNow);
+    }
 
-            Assert.NotNull(response);
-            Assert.Equal("fake-jwt-token", response.Token);
-            Assert.True(response.ExpireIn > DateTime.UtcNow);
-        }
+    [Fact]
+    public async Task Deve_LancarExcecao_QuandoEmailNaoEncontrado()
+    {
+        var mockRepo = new Mock<IUserRepository>();
+        mockRepo.Setup(r => r.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((UserEntity?)null);
 
-        [Fact]
-        public async Task Deve_LancarExcecao_QuandoEmailNaoEncontrado()
-        {
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((UserEntity?)null);
+        var mockTokenService = new Mock<ITokenService>();
 
-            var mockTokenService = new Mock<ITokenService>();
+        var service = new AuthService(mockRepo.Object, mockTokenService.Object);
 
-            var service = new AuthService(mockRepo.Object, mockTokenService.Object);
+        var request = new LoginRequest("naoexiste@email.com", "Senha@123");
 
-            var request = new LoginRequest("naoexiste@email.com", "Senha@123");
+        await Assert.ThrowsAsync<AuthenticationException>(() => service.LoginAsync(request));
+    }
 
-            await Assert.ThrowsAsync<AuthenticationException>(() => service.LoginAsync(request));
-        }
+    [Fact]
+    public async Task Deve_LancarExcecao_QuandoSenhaIncorreta()
+    {
+        var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", Role.User);
 
-        [Fact]
-        public async Task Deve_LancarExcecao_QuandoSenhaIncorreta()
-        {
-            var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", Role.User);
+        var mockRepo = new Mock<IUserRepository>();
+        mockRepo.Setup(r => r.GetByEmailAsync(usuario.Email)).ReturnsAsync(usuario);
 
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.GetByEmailAsync(usuario.Email)).ReturnsAsync(usuario);
+        var mockTokenService = new Mock<ITokenService>();
 
-            var mockTokenService = new Mock<ITokenService>();
+        var service = new AuthService(mockRepo.Object, mockTokenService.Object);
 
-            var service = new AuthService(mockRepo.Object, mockTokenService.Object);
+        var request = new LoginRequest(usuario.Email, "SenhaErrada");
 
-            var request = new LoginRequest(usuario.Email, "SenhaErrada");
-
-            await Assert.ThrowsAsync<AuthenticationException>(() => service.LoginAsync(request));
-        }
+        await Assert.ThrowsAsync<AuthenticationException>(() => service.LoginAsync(request));
     }
 }

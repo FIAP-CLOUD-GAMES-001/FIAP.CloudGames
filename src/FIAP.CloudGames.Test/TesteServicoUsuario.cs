@@ -6,90 +6,88 @@ using FIAP.CloudGames.Domain.Requests.User;
 using FIAP.CloudGames.Service.User;
 using Moq;
 
-namespace FIAP.CloudGames.Test
+namespace FIAP.CloudGames.Test;
+
+public class TesteServicoUsuario
 {
-    public class TesteServicoUsuario
+    [Fact]
+    public void Deve_Criar_UserEntity_Com_Valores_Corretos()
     {
-        [Fact]
-        public void Deve_Criar_UserEntity_Com_Valores_Corretos()
-        {
-            var usuario = new UserEntity("João", "joao@email.com", "senha123", Role.Admin);
+        var usuario = new UserEntity("João", "joao@email.com", "senha123", Role.Admin);
 
-            Assert.Equal("João", usuario.Name);
-            Assert.Equal("joao@email.com", usuario.Email);
-            Assert.Equal(Role.Admin, usuario.Role);
-            Assert.NotNull(usuario.PasswordHash);
-            Assert.True(usuario.CreatedAt <= DateTime.UtcNow);
-        }
+        Assert.Equal("João", usuario.Name);
+        Assert.Equal("joao@email.com", usuario.Email);
+        Assert.Equal(Role.Admin, usuario.Role);
+        Assert.NotNull(usuario.PasswordHash);
+        Assert.True(usuario.CreatedAt <= DateTime.UtcNow);
+    }
 
-        [Fact]
-        public void Deve_Verificar_Senha_Correta()
-        {
-            var usuario = new UserEntity("Maria", "maria@email.com", "minhasenha", Role.User);
+    [Fact]
+    public void Deve_Verificar_Senha_Correta()
+    {
+        var usuario = new UserEntity("Maria", "maria@email.com", "minhasenha", Role.User);
 
-            Assert.True(usuario.VerifyPassword("minhasenha"));
-        }
+        Assert.True(usuario.VerifyPassword("minhasenha"));
+    }
 
-        [Fact]
-        public void Deve_Falhar_Verificacao_Senha_Incorreta()
-        {
-            var usuario = new UserEntity("Carlos", "carlos@email.com", "abc123", Role.User);
+    [Fact]
+    public void Deve_Falhar_Verificacao_Senha_Incorreta()
+    {
+        var usuario = new UserEntity("Carlos", "carlos@email.com", "abc123", Role.User);
 
-            Assert.False(usuario.VerifyPassword("*senhaerrada*"));
-        }
+        Assert.False(usuario.VerifyPassword("*pserrada*"));
+    }
 
-        [Fact]
-        public void Deve_Atualizar_Role_Do_Usuario()
-        {
-            var usuario = new UserEntity("Ana", "ana@email.com", "senha456", Role.User);
+    [Fact]
+    public void Deve_Atualizar_Role_Do_Usuario()
+    {
+        var usuario = new UserEntity("Ana", "ana@email.com", "senha456", Role.User);
 
-            usuario.UpdateRole(Role.Admin);
+        usuario.UpdateRole(Role.Admin);
 
-            Assert.Equal(Role.Admin, usuario.Role);
-        }
+        Assert.Equal(Role.Admin, usuario.Role);
+    }
 
-        [Fact]
-        public async Task Deve_Cadastrar_Usuario_Com_Sucesso()
-        {
-            // Arrange
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.EmailExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
-            mockRepo.Setup(r => r.AddAsync(It.IsAny<UserEntity>())).Returns(Task.CompletedTask);
+    [Fact]
+    public async Task Deve_Cadastrar_Usuario_Com_Sucesso()
+    {
+        // Arrange
+        var mockRepo = new Mock<IUserRepository>();
+        mockRepo.Setup(r => r.EmailExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+        mockRepo.Setup(r => r.AddAsync(It.IsAny<UserEntity>())).Returns(Task.CompletedTask);
 
-            var service = new UserService(mockRepo.Object);
+        var service = new UserService(mockRepo.Object);
 
-            var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
+        var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
 
-            // Act
-            var response = await service.RegisterAsync(request);
+        // Act
+        var response = await service.RegisterAsync(request);
 
-            // Assert
-            Assert.NotNull(response);
-            Assert.Equal(request.Name, response.Name);
-            Assert.Equal(request.Email.ToLowerInvariant(), response.Email);
-            Assert.Equal(request.Role, response.Role);
-            mockRepo.Verify(r => r.AddAsync(It.IsAny<UserEntity>()), Times.Once);
-        }
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(request.Name, response.Name);
+        Assert.Equal(request.Email.ToLowerInvariant(), response.Email);
+        Assert.Equal(request.Role, response.Role);
+        mockRepo.Verify(r => r.AddAsync(It.IsAny<UserEntity>()), Times.Once);
+    }
 
 
-        [Fact]
-        public async Task Deve_Lancar_Excecao_Quando_Email_Ja_Estiver_Cadastrado()
-        {
-            // Arrange
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.EmailExistsAsync("teste@email.com")).ReturnsAsync(true);
+    [Fact]
+    public async Task Deve_Lancar_Excecao_Quando_Email_Ja_Estiver_Cadastrado()
+    {
+        // Arrange
+        var mockRepo = new Mock<IUserRepository>();
+        mockRepo.Setup(r => r.EmailExistsAsync("teste@email.com")).ReturnsAsync(true);
 
-            var service = new UserService(mockRepo.Object);
+        var service = new UserService(mockRepo.Object);
 
-            var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
+        var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
 
-            // Act & Assert
-            var ex = await Assert.ThrowsAsync<ConflictException>(() =>
-            service.RegisterAsync(request));
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ConflictException>(() =>
+        service.RegisterAsync(request));
 
-            Assert.Equal("Usuário já cadastrado.", ex.Message);
-            mockRepo.Verify(r => r.AddAsync(It.IsAny<UserEntity>()), Times.Never);
-        }
+        Assert.Equal("Usuário já cadastrado.", ex.Message);
+        mockRepo.Verify(r => r.AddAsync(It.IsAny<UserEntity>()), Times.Never);
     }
 }
-
