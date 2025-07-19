@@ -12,6 +12,7 @@ using System.Net;
 using System.Security.Claims;
 
 namespace FIAP.CloudGames.Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
@@ -36,19 +37,16 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
     {
-        
-            ValidationResult validation = await validator.ValidateAsync(request);
+        ValidationResult validation = await validator.ValidateAsync(request);
 
-            if (!validation.IsValid)
-            {
-                var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
-                return this.ApiFail("Validation failed.", errors);
-            }
+        if (!validation.IsValid)
+        {
+            var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
+            return this.ApiFail("Validation failed.", errors);
+        }
 
-            var userCreated = await service.RegisterAsync(request);
-            return this.ApiOk(userCreated, "User registered successfully.", HttpStatusCode.Created);
-       
-       
+        var userCreated = await service.RegisterAsync(request);
+        return this.ApiOk(userCreated, "User registered successfully.", HttpStatusCode.Created);
     }
 
     /// <summary>
@@ -58,7 +56,7 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     /// returns a successful response containing the list of users if the operation completes successfully.</remarks>
     /// <returns>An <see cref="IActionResult"/> containing an <see cref="ApiResponse{T}"/> with a list of <see
     /// cref="UserResponse"/> objects  and a success message. Returns a 200 OK status code on success.</returns>
-    [HttpGet]
+    [HttpGet("users")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<List<UserResponse>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllUsers()

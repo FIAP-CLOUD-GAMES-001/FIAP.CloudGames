@@ -40,7 +40,6 @@ public static class AppExtension
             ]);
         });
     }
-
     private static void GenerateMigrations(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();

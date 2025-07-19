@@ -1,7 +1,7 @@
 ﻿using FIAP.CloudGames.Domain.Exceptions;
 using FIAP.CloudGames.Domain.Models;
-using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Text.Json;
 
 namespace FIAP.CloudGames.Api.Middlewares;
@@ -18,9 +18,6 @@ public class ExceptionHandlingMiddleware(
         }
         catch (Exception ex)
         {
-         
-            
-
             context.Response.ContentType = "application/json";
 
             context.Response.StatusCode = ex switch
@@ -45,7 +42,7 @@ public class ExceptionHandlingMiddleware(
 
             var response = ApiResponse<string>.Fail(message, [ex.Message]);
             var json = JsonSerializer.Serialize(response);
-            logger.LogError(ex, context.Response.StatusCode.ToString(), context.Request.Path);
+            logger.LogError(ex, ((HttpStatusCode)context.Response.StatusCode).ToString(), context.Request.Path);
             await context.Response.WriteAsync(json);
         }
     }

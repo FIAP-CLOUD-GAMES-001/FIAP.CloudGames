@@ -4,9 +4,9 @@ using FIAP.CloudGames.Domain.Models;
 using FIAP.CloudGames.Domain.Requests.Auth;
 using FIAP.CloudGames.Domain.Responses.Auth;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 
 namespace FIAP.CloudGames.Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 [ProducesResponseType(typeof(ApiResponse<AuthResponse>), StatusCodes.Status200OK)]
@@ -15,8 +15,6 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
 public class AuthController(IAuthService service, ILogger<AuthController> logger) : ControllerBase
 {
-   
-
     /// <summary>
     /// Authenticates a user based on the provided login request and returns the result.
     /// </summary>
@@ -31,16 +29,13 @@ public class AuthController(IAuthService service, ILogger<AuthController> logger
     {
         try
         {
-
             var user = await service.LoginAsync(request);
-            logger.LogInformation("Login realizado para o token-user", user.Token);
             return this.ApiOk(user, "Login successful.");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message.ToString(),ex);
+            logger.LogError(ex.Message.ToString(), ex);
             throw;
         }
-      
     }
 }

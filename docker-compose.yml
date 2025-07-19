@@ -12,9 +12,8 @@ services:
     networks:
       - cloudgames-network
   mongodb:
-    image: mongo:6.0
+    image: mongo
     container_name: mongodb
-    restart: always
     ports:
       - "27017:27017"
     volumes:
@@ -25,7 +24,6 @@ services:
 volumes:
   sql_data:
   mongo_data:
-
 
 networks:
   cloudgames-network:
