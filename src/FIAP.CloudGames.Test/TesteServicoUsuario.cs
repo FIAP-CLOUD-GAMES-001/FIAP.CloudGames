@@ -35,7 +35,7 @@ public class TesteServicoUsuario
     {
         var usuario = new UserEntity("Carlos", "carlos@email.com", "abc123", Role.User);
 
-        Assert.False(usuario.VerifyPassword("*senhaerrada*"));
+        Assert.False(usuario.VerifyPassword("*pserrada*"));
     }
 
     [Fact]
