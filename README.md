@@ -33,7 +33,7 @@ Desenvolver uma API REST que permita:
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-### 2. Subir o Banco de Dados
+### 2. Subir o Banco de Dados da aplicação e para logs
 
 ```bash
 docker-compose up -d
@@ -42,6 +42,9 @@ docker-compose up -d
 O docker compose vai subir um banco SqlServer automaticamente no docker com as seguintes configurações de acesso:
 ```bash
 Server=host.docker.internal,1433;Database=CloudGames;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+```
+```bash
+mongodb://host.docker.internal:27017/logsdb
 ```
 
 Segue trecho formal e direto para inclusão no **README**:
