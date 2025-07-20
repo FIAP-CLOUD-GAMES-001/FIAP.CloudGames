@@ -2,17 +2,16 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace FIAP.CloudGames.Domain.Entities;
-public class UserEntity
+public class UserEntity : BaseEntity
 {
-    public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
-    public Role Role { get; private set; } = Role.User;
-    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public ERole Role { get; private set; } = ERole.User;
+    public ICollection<OwnedGameEntity> OwnedGames { get; private set; } = [];
 
     private UserEntity() { }
-    public UserEntity(string name, string email, string plainPassword, Role role = Role.User)
+    public UserEntity(string name, string email, string plainPassword, ERole role = ERole.User)
     {
         Name = name.Trim();
         Email = email.Trim().ToLowerInvariant();
@@ -32,7 +31,7 @@ public class UserEntity
         return result == PasswordVerificationResult.Success;
     }
 
-    public void UpdateRole(Role role)
+    public void UpdateRole(ERole role)
     {
         Role = role;
     }

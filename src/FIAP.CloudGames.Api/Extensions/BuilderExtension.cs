@@ -1,9 +1,12 @@
-﻿using FIAP.CloudGames.Domain.Interfaces.Auth;
+﻿using FIAP.CloudGames.Api.Filters;
+using FIAP.CloudGames.Domain.Interfaces.Auth;
 using FIAP.CloudGames.Domain.Interfaces.Repositories;
 using FIAP.CloudGames.Domain.Interfaces.Services;
+using FIAP.CloudGames.Domain.Models;
 using FIAP.CloudGames.infrastructure.Data;
 using FIAP.CloudGames.infrastructure.Repositories;
 using FIAP.CloudGames.Service.Auth;
+using FIAP.CloudGames.Service.Game;
 using FIAP.CloudGames.Service.User;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,8 +16,10 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
+using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace FIAP.CloudGames.Api.Extensions;
 
@@ -43,12 +48,20 @@ public static class BuilderExtension
     private static void ConfigureDependencyInjectionService(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IAuthService, AuthService>();
-        builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IGameService, GameService>();
+        builder.Services.AddScoped<IOwnedGameService, OwnedGameService>();
+        builder.Services.AddScoped<IPromotionService, PromotionService>();
+
+        builder.Services.AddScoped<OwnedGameAccessFilter>();
     }
     private static void ConfigureDependencyInjectionRepository(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IGameRepository, GameRepository>();
+        builder.Services.AddScoped<IOwnedGameRepository, OwnedGameRepository>();
+        builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
     }
     private static void ConfigureJwt(this WebApplicationBuilder builder)
     {
@@ -67,6 +80,27 @@ public static class BuilderExtension
                     ValidIssuer = configuration["Issuer"],
                     ValidAudience = configuration["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Key"]!))
+                };
+
+                o.Events = new JwtBearerEvents
+                {
+                    OnForbidden = context =>
+                    {
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        var apiResponse = ApiResponse<string>.Fail("Authorization Denied", ["You do not have the necessary permissions to access this resource."]);
+                        var jsonResponse = JsonSerializer.Serialize(apiResponse);
+                        return context.Response.WriteAsync(jsonResponse);
+                    },
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        var apiResponse = ApiResponse<string>.Fail("Authentication Failed", ["Authentication required or invalid credentials."]);
+                        var jsonResponse = JsonSerializer.Serialize(apiResponse);
+                        return context.Response.WriteAsync(jsonResponse);
+                    }
                 };
             });
 

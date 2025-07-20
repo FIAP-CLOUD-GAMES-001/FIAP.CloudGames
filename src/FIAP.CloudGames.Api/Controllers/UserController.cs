@@ -20,7 +20,10 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status403Forbidden)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
-public class UserController(IUserService service, IValidator<RegisterUserRequest> validator) : ControllerBase
+public class UserController(
+    IUserService service,
+    IValidator<RegisterUserRequest> validator,
+    IValidator<RegisterUserAdminRequest> validatorAdmin) : ControllerBase
 {
     /// <summary>
     /// Registers a new user with the provided information.
@@ -78,9 +81,9 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     [HttpPost("create-user-admin")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateUserFromAdmin([FromBody] RegisterUserRequest request)
+    public async Task<IActionResult> CreateUserFromAdmin([FromBody] RegisterUserAdminRequest request)
     {
-        ValidationResult validation = await validator.ValidateAsync(request);
+        ValidationResult validation = await validatorAdmin.ValidateAsync(request);
 
         if (!validation.IsValid)
         {
@@ -88,7 +91,7 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
             return this.ApiFail("Validation failed.", errors);
         }
 
-        var created = await service.RegisterAsync(request);
+        var created = await service.RegisterAdminAsync(request);
         return this.ApiOk(created, "Admin created successfully.", HttpStatusCode.Created);
     }
 
@@ -99,13 +102,13 @@ public class UserController(IUserService service, IValidator<RegisterUserRequest
     /// provided <paramref name="role"/> parameter. A successful update returns a response containing the updated user
     /// information.</remarks>
     /// <param name="id">The unique identifier of the user whose role is to be updated.</param>
-    /// <param name="role">The new role to assign to the user. Must be a valid <see cref="Role"/> value.</param>
+    /// <param name="role">The new role to assign to the user. Must be a valid <see cref="ERole"/> value.</param>
     /// <returns>An <see cref="IActionResult"/> containing an <see cref="ApiResponse{T}"/> with the updated user information if
     /// the operation is successful.</returns>
     [HttpPut("{id}/role")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateRole(int id, [FromQuery] Role role)
+    public async Task<IActionResult> UpdateRole(int id, [FromQuery] ERole role)
     {
         var updated = await service.UpdateUserRoleAsync(id, role);
         return this.ApiOk(updated, $"User role updated to {role}.");

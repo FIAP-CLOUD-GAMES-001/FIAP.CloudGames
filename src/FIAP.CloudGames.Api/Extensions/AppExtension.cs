@@ -59,7 +59,7 @@ public static class AppExtension
                 name: "Administrator",
                 email: email,
                 plainPassword: password,
-                role: Role.Admin
+                role: ERole.Admin
             );
 
             dbContext.Users.Add(admin);
