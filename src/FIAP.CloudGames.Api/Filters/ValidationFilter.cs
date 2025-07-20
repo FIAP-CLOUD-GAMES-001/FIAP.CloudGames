@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net;
 
 namespace FIAP.CloudGames.Api.Filters;
 
@@ -26,7 +27,7 @@ public class ValidationFilter<T> : IAsyncActionFilter where T : class
                 Errors = [$"Expected request of type {typeof(T).Name}."]
             })
             {
-                StatusCode = 400
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
             return;
         }
@@ -42,7 +43,7 @@ public class ValidationFilter<T> : IAsyncActionFilter where T : class
                 Errors = errors
             })
             {
-                StatusCode = 400
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
             return;
         }
