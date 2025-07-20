@@ -30,6 +30,7 @@ public class OwnedGameController(IOwnedGameService ownedGameService) : Controlle
     /// the authenticated user's ID.</returns>
     [HttpPost]
     [ServiceFilter(typeof(OwnedGameAccessFilter))]
+    [TypeFilter(typeof(ValidationFilter<AddOwnedGameRequest>))]
     [ProducesResponseType(typeof(ApiResponse<OwnedGameResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Add([FromBody] AddOwnedGameRequest request)
     {

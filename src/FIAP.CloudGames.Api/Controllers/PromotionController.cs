@@ -1,4 +1,5 @@
 ﻿using FIAP.CloudGames.Api.Extensions;
+using FIAP.CloudGames.Api.Filters;
 using FIAP.CloudGames.Domain.Interfaces.Services;
 using FIAP.CloudGames.Domain.Models;
 using FIAP.CloudGames.Domain.Requests.Game;
@@ -28,6 +29,7 @@ public class PromotionController(IPromotionService promotionService) : Controlle
     /// <returns>An <see cref="IActionResult"/> containing the created promotion details wrapped in an  <see
     /// cref="ApiResponse{T}"/> object, along with a status code of 201 (Created).</returns>
     [HttpPost]
+    [TypeFilter(typeof(ValidationFilter<CreatePromotionRequest>))]
     [ProducesResponseType(typeof(ApiResponse<PromotionResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreatePromotionRequest request)
     {

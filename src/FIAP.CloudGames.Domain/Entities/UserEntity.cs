@@ -1,5 +1,5 @@
 ﻿using FIAP.CloudGames.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
+using Isopoh.Cryptography.Argon2;
 
 namespace FIAP.CloudGames.Domain.Entities;
 public class UserEntity : BaseEntity
@@ -19,16 +19,14 @@ public class UserEntity : BaseEntity
         PasswordHash = HashPassword(plainPassword);
     }
 
-    private string HashPassword(string plainPassword)
+    private static string HashPassword(string plainPassword)
     {
-        return new PasswordHasher<UserEntity>().HashPassword(this, plainPassword);
+        return Argon2.Hash(plainPassword);
     }
 
     public bool VerifyPassword(string plainPassword)
     {
-        var result = new PasswordHasher<UserEntity>()
-            .VerifyHashedPassword(this, PasswordHash, plainPassword);
-        return result == PasswordVerificationResult.Success;
+        return Argon2.Verify(PasswordHash, plainPassword);
     }
 
     public void UpdateRole(ERole role)

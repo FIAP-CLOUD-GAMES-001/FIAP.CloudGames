@@ -1,11 +1,10 @@
 ﻿using FIAP.CloudGames.Api.Extensions;
+using FIAP.CloudGames.Api.Filters;
 using FIAP.CloudGames.Domain.Enums;
 using FIAP.CloudGames.Domain.Interfaces.Services;
 using FIAP.CloudGames.Domain.Models;
 using FIAP.CloudGames.Domain.Requests.User;
 using FIAP.CloudGames.Domain.Responses.User;
-using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -20,10 +19,7 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status403Forbidden)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
-public class UserController(
-    IUserService service,
-    IValidator<RegisterUserRequest> validator,
-    IValidator<RegisterUserAdminRequest> validatorAdmin) : ControllerBase
+public class UserController(IUserService service) : ControllerBase
 {
     /// <summary>
     /// Registers a new user with the provided information.
@@ -37,17 +33,10 @@ public class UserController(
     /// error messages.</returns>
     [HttpPost("register")]
     [AllowAnonymous]
+    [TypeFilter(typeof(ValidationFilter<RegisterUserRequest>))]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
     {
-        ValidationResult validation = await validator.ValidateAsync(request);
-
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
-            return this.ApiFail("Validation failed.", errors);
-        }
-
         var userCreated = await service.RegisterAsync(request);
         return this.ApiOk(userCreated, "User registered successfully.", HttpStatusCode.Created);
     }
@@ -80,17 +69,10 @@ public class UserController(
     /// operation is successful. Returns a validation error response if the input data is invalid.</returns>
     [HttpPost("create-user-admin")]
     [Authorize(Roles = "Admin")]
+    [TypeFilter(typeof(ValidationFilter<RegisterUserAdminRequest>))]
     [ProducesResponseType(typeof(ApiResponse<UserResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateUserFromAdmin([FromBody] RegisterUserAdminRequest request)
     {
-        ValidationResult validation = await validatorAdmin.ValidateAsync(request);
-
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors.Select(e => e.ErrorMessage).ToList();
-            return this.ApiFail("Validation failed.", errors);
-        }
-
         var created = await service.RegisterAdminAsync(request);
         return this.ApiOk(created, "Admin created successfully.", HttpStatusCode.Created);
     }

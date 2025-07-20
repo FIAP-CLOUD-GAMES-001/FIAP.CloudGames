@@ -1,4 +1,5 @@
 ﻿using FIAP.CloudGames.Api.Extensions;
+using FIAP.CloudGames.Api.Filters;
 using FIAP.CloudGames.Domain.Interfaces.Services;
 using FIAP.CloudGames.Domain.Models;
 using FIAP.CloudGames.Domain.Requests.Game;
@@ -27,6 +28,7 @@ public class GameController(IGameService gameService) : ControllerBase
     /// object, along with a status code of <see cref="StatusCodes.Status201Created"/>.</returns>
     [HttpPost]
     [Authorize(Roles = "Admin")]
+    [TypeFilter(typeof(ValidationFilter<CreateGameRequest>))]
     [ProducesResponseType(typeof(ApiResponse<GameResponse>), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateGameRequest request)
     {

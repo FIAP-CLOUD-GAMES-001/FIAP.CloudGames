@@ -10,6 +10,7 @@ using FIAP.CloudGames.Service.Game;
 using FIAP.CloudGames.Service.User;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -185,9 +186,15 @@ public static class BuilderExtension
     }
     private static void UseJsonFileConfiguration(this WebApplicationBuilder builder)
     {
-        //if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        //    builder.Services.AddDataProtection()
-        //        .PersistKeysToFileSystem(new DirectoryInfo("/var/app-keys"));
+        var keysDirectoryPath = Path.Combine(AppContext.BaseDirectory, "dataprotection-keys");
+        var keysDirectory = new DirectoryInfo(keysDirectoryPath);
+
+        if (!keysDirectory.Exists)
+            keysDirectory.Create();
+
+        builder.Services.AddDataProtection()
+            .PersistKeysToFileSystem(keysDirectory)
+            .SetApplicationName("FIAP.CloudGames");
 
         builder.Configuration
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
