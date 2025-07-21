@@ -1,7 +1,7 @@
 ﻿using FIAP.CloudGames.Domain.Requests.Game;
 using FluentValidation;
 
-namespace FIAP.CloudGames.Api.Validators;
+namespace FIAP.CloudGames.Service.Validators;
 
 public class CreatePromotionRequestValidator : AbstractValidator<CreatePromotionRequest>
 {

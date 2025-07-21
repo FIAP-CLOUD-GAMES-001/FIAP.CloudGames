@@ -2,7 +2,7 @@
 using FIAP.CloudGames.Domain.Requests.User;
 using FluentValidation;
 
-namespace FIAP.CloudGames.Api.Validators;
+namespace FIAP.CloudGames.Service.Validators;
 
 public class RegisterUserAdminRequestValidator : AbstractValidator<RegisterUserAdminRequest>
 {
