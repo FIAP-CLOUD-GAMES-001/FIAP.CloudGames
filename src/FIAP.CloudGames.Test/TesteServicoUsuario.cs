@@ -13,11 +13,11 @@ public class TesteServicoUsuario
     [Fact]
     public void Deve_Criar_UserEntity_Com_Valores_Corretos()
     {
-        var usuario = new UserEntity("João", "joao@email.com", "senha123", Role.Admin);
+        var usuario = new UserEntity("João", "joao@email.com", "senha123", ERole.Admin);
 
         Assert.Equal("João", usuario.Name);
         Assert.Equal("joao@email.com", usuario.Email);
-        Assert.Equal(Role.Admin, usuario.Role);
+        Assert.Equal(ERole.Admin, usuario.Role);
         Assert.NotNull(usuario.PasswordHash);
         Assert.True(usuario.CreatedAt <= DateTime.UtcNow);
     }
@@ -25,7 +25,7 @@ public class TesteServicoUsuario
     [Fact]
     public void Deve_Verificar_Senha_Correta()
     {
-        var usuario = new UserEntity("Maria", "maria@email.com", "minhasenha", Role.User);
+        var usuario = new UserEntity("Maria", "maria@email.com", "minhasenha", ERole.User);
 
         Assert.True(usuario.VerifyPassword("minhasenha"));
     }
@@ -33,7 +33,7 @@ public class TesteServicoUsuario
     [Fact]
     public void Deve_Falhar_Verificacao_Senha_Incorreta()
     {
-        var usuario = new UserEntity("Carlos", "carlos@email.com", "abc123", Role.User);
+        var usuario = new UserEntity("Carlos", "carlos@email.com", "abc123", ERole.User);
 
         Assert.False(usuario.VerifyPassword("*pserrada*"));
     }
@@ -41,11 +41,11 @@ public class TesteServicoUsuario
     [Fact]
     public void Deve_Atualizar_Role_Do_Usuario()
     {
-        var usuario = new UserEntity("Ana", "ana@email.com", "senha456", Role.User);
+        var usuario = new UserEntity("Ana", "ana@email.com", "senha456", ERole.User);
 
-        usuario.UpdateRole(Role.Admin);
+        usuario.UpdateRole(ERole.Admin);
 
-        Assert.Equal(Role.Admin, usuario.Role);
+        Assert.Equal(ERole.Admin, usuario.Role);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class TesteServicoUsuario
 
         var service = new UserService(mockRepo.Object);
 
-        var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
+        var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123");
 
         // Act
         var response = await service.RegisterAsync(request);
@@ -67,7 +67,6 @@ public class TesteServicoUsuario
         Assert.NotNull(response);
         Assert.Equal(request.Name, response.Name);
         Assert.Equal(request.Email.ToLowerInvariant(), response.Email);
-        Assert.Equal(request.Role, response.Role);
         mockRepo.Verify(r => r.AddAsync(It.IsAny<UserEntity>()), Times.Once);
     }
 
@@ -81,7 +80,7 @@ public class TesteServicoUsuario
 
         var service = new UserService(mockRepo.Object);
 
-        var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123", Role.User);
+        var request = new RegisterUserRequest("Teste", "teste@email.com", "Senha@123");
 
         // Act & Assert
         var ex = await Assert.ThrowsAsync<ConflictException>(() =>

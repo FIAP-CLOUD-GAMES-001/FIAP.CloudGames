@@ -1,6 +1,6 @@
 ﻿namespace FIAP.CloudGames.Domain.Enums;
 
-public enum Role
+public enum ERole
 {
     User = 0,
     Admin = 1

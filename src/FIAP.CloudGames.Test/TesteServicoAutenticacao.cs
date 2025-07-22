@@ -14,7 +14,7 @@ public class TesteServicoAutenticacao
     [Fact]
     public async Task Deve_RetornarToken_QuandoCredenciaisForemValidas()
     {
-        var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", Role.User);
+        var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", ERole.User);
 
         var mockRepo = new Mock<IUserRepository>();
         mockRepo.Setup(r => r.GetByEmailAsync(usuario.Email)).ReturnsAsync(usuario);
@@ -52,7 +52,7 @@ public class TesteServicoAutenticacao
     [Fact]
     public async Task Deve_LancarExcecao_QuandoSenhaIncorreta()
     {
-        var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", Role.User);
+        var usuario = new UserEntity("Teste", "teste@email.com", "Senha@123", ERole.User);
 
         var mockRepo = new Mock<IUserRepository>();
         mockRepo.Setup(r => r.GetByEmailAsync(usuario.Email)).ReturnsAsync(usuario);

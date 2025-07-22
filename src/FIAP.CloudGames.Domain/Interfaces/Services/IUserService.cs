@@ -7,6 +7,7 @@ public interface IUserService
 {
     Task<UserResponse> GetByIdAsync(int id);
     Task<UserResponse> RegisterAsync(RegisterUserRequest request);
+    Task<UserResponse> RegisterAdminAsync(RegisterUserAdminRequest request);
     Task<List<UserResponse>> GetAllUsersAsync();
-    Task<UserResponse> UpdateUserRoleAsync(int userId, Role newRole);
+    Task<UserResponse> UpdateUserRoleAsync(int userId, ERole newRole);
 }

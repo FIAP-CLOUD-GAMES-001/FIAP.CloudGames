@@ -2,11 +2,11 @@
 using FIAP.CloudGames.Domain.Requests.User;
 using FluentValidation;
 
-namespace FIAP.CloudGames.Api.Validators;
+namespace FIAP.CloudGames.Service.Validators;
 
-public class RegisterUserRequestValidator : AbstractValidator<RegisterUserRequest>
+public class RegisterUserAdminRequestValidator : AbstractValidator<RegisterUserAdminRequest>
 {
-    public RegisterUserRequestValidator()
+    public RegisterUserAdminRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
@@ -16,7 +16,7 @@ public class RegisterUserRequestValidator : AbstractValidator<RegisterUserReques
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("Invalid email format.");
 
-        RuleFor(x => x.Password) 
+        RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required.")
             .MinimumLength(8).WithMessage("Password must be at least 8 characters long.")
             .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
@@ -25,8 +25,7 @@ public class RegisterUserRequestValidator : AbstractValidator<RegisterUserReques
             .Matches(@"[!@#$%^&*()]").WithMessage("Password must contain at least one special character.");
 
         RuleFor(x => x.Role)
-            .Must(r => Enum.IsDefined(typeof(Role), r))
+            .Must(r => Enum.IsDefined(typeof(ERole), r))
             .WithMessage("Invalid role value.");
     }
 }
-
