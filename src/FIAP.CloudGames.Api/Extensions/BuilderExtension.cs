@@ -1,4 +1,5 @@
 ﻿using FIAP.CloudGames.Api.Filters;
+using FIAP.CloudGames.Api.Logging;
 using FIAP.CloudGames.Domain.Interfaces.Auth;
 using FIAP.CloudGames.Domain.Interfaces.Repositories;
 using FIAP.CloudGames.Domain.Interfaces.Services;
@@ -91,6 +92,8 @@ public static class BuilderExtension
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         var apiResponse = ApiResponse<string>.Fail("Authorization Denied", ["You do not have the necessary permissions to access this resource."]);
                         var jsonResponse = JsonSerializer.Serialize(apiResponse);
+
+                        Log.Warning("Forbidden access attempt: {Path}", context.Request.Path);
                         return context.Response.WriteAsync(jsonResponse);
                     },
                     OnChallenge = context =>
@@ -100,6 +103,8 @@ public static class BuilderExtension
                         context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         var apiResponse = ApiResponse<string>.Fail("Authentication Failed", ["Authentication required or invalid credentials."]);
                         var jsonResponse = JsonSerializer.Serialize(apiResponse);
+
+                        Log.Warning("Unauthorized access attempt: {Path}", context.Request.Path);
                         return context.Response.WriteAsync(jsonResponse);
                     }
                 };
@@ -111,10 +116,16 @@ public static class BuilderExtension
     private static void ConfigureLogMongo(this WebApplicationBuilder builder)
     {
         var mongoConnection = builder.Configuration.GetConnectionString("MongoDB") ?? string.Empty;
+
+        builder.Services.AddHttpContextAccessor();
+        HttpContextAccessorWrapper.Accessor = builder.Services.BuildServiceProvider()
+            .GetRequiredService<IHttpContextAccessor>();
+
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .Enrich.FromLogContext()
+            .Enrich.With<UserClaimsEnricher>()
             .WriteTo.Console()
             .WriteTo.MongoDB(mongoConnection, collectionName: "logs")
             .CreateLogger();

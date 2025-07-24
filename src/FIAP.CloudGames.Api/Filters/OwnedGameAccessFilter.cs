@@ -13,7 +13,7 @@ namespace FIAP.CloudGames.Api.Filters;
 /// <remarks>This filter validates the authenticated user's identity and role before allowing access to specific
 /// actions. It ensures that users can only perform actions on their own game data unless they have administrative
 /// privileges.</remarks>
-public class OwnedGameAccessFilter : IAsyncActionFilter
+public class OwnedGameAccessFilter(ILogger<OwnedGameAccessFilter> logger) : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -25,6 +25,8 @@ public class OwnedGameAccessFilter : IAsyncActionFilter
         {
             context.Result = new UnauthorizedObjectResult(
                 ApiResponse<string>.Fail("Authentication required", ["Invalid token or user ID not found."]));
+
+            logger.LogWarning($"Unauthorized access attempt with invalid user ID claim or token.");
             return;
         }
 
@@ -37,6 +39,8 @@ public class OwnedGameAccessFilter : IAsyncActionFilter
                 {
                     StatusCode = (int)HttpStatusCode.Forbidden
                 };
+
+                logger.LogWarning("Authorization denied for user to add game to user {targetUserId}", addRequest.UserId);
                 return;
             }
         }
@@ -49,12 +53,15 @@ public class OwnedGameAccessFilter : IAsyncActionFilter
                 {
                     StatusCode = (int)HttpStatusCode.Forbidden
                 };
+
+                logger.LogWarning("Authorization denied for user to access user {targetUserId}'s library", targetUserId);
                 return;
             }
         }
         else
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            logger.LogWarning($"Forbidden access attempt by user, no valid request found.");
             return;
         }
 
