@@ -29,7 +29,7 @@ public class TesteServicoOwnedGame
     }
 
     [Fact]
-    public async Task AddAsync_DeveAdicionarOwnedGameERetornarResponse()
+    public async Task Deve_AdicionarOwnedGameERetornarResponse()
     {
         // Arrange
         var user = new UserEntity("Usuário", "email@teste.com", "Senha@123", ERole.User);
@@ -58,7 +58,7 @@ public class TesteServicoOwnedGame
     }
 
     [Fact]
-    public async Task AddAsync_DeveLancarExcecao_SeUsuarioNaoEncontrado()
+    public async Task Deve_LancarExcecao_SeUsuarioNaoEncontrado()
     {
         var userRepoMock = new Mock<IUserRepository>();
         var gameRepoMock = new Mock<IGameRepository>();
@@ -74,7 +74,7 @@ public class TesteServicoOwnedGame
     }
 
     [Fact]
-    public async Task AddAsync_DeveLancarExcecao_SeGameNaoEncontrado()
+    public async Task Deve_LancarExcecao_SeGameNaoEncontrado()
     {
         var user = new UserEntity("Usuário", "email@teste.com", "Senha@123", ERole.User);
 
@@ -93,7 +93,7 @@ public class TesteServicoOwnedGame
     }
 
     [Fact]
-    public async Task GetByUserIdAsync_DeveRetornarListaDeOwnedGameResponse()
+    public async Task Deve_RetornarOwnedGameResponse()
     {
         var ownedGames = new List<OwnedGameEntity>
         {

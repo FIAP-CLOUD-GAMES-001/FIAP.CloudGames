@@ -29,7 +29,7 @@ public class TesteServicoPromotion
     }
 
     [Fact]
-    public async Task CreateAsync_DeveAdicionarPromocaoERetornarResponse()
+    public async Task Deve_AdicionarPromocaoERetornarResponse()
     {
         // Arrange
         var promoRepoMock = new Mock<IPromotionRepository>();
@@ -56,7 +56,7 @@ public class TesteServicoPromotion
     }
 
     [Fact]
-    public async Task CreateAsync_DeveLancarExcecao_SeGameNaoEncontrado()
+    public async Task Deve_LancarExcecao_SeGameNaoEncontrado()
     {
         var promoRepoMock = new Mock<IPromotionRepository>();
         var gameRepoMock = new Mock<IGameRepository>();
@@ -70,7 +70,7 @@ public class TesteServicoPromotion
     }
 
     [Fact]
-    public async Task ListAsync_DeveRetornarListaDePromotionResponse()
+    public async Task Deve_RetornarListaDePromotionResponse()
     {
         var promoRepoMock = new Mock<IPromotionRepository>();
         var gameRepoMock = new Mock<IGameRepository>();

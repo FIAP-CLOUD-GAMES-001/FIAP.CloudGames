@@ -70,7 +70,7 @@ public class TesteServicoGamer
     }
 
     [Fact]
-    public async Task ListAsync_DeveRetornarListaDeGameResponse()
+    public async Task Deve_RetornarListaDeGameResponse()
     {
         // Arrange
         var repoMock = new Mock<IGameRepository>();
