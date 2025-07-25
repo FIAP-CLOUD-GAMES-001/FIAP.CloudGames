@@ -6,7 +6,7 @@ using System.Net;
 
 namespace FIAP.CloudGames.Api.Filters;
 
-public class ValidationFilter<T> : IAsyncActionFilter where T : class
+public class ValidationFilter<T>(ILogger<ValidationFilter<T>> logger) : IAsyncActionFilter where T : class
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -29,6 +29,8 @@ public class ValidationFilter<T> : IAsyncActionFilter where T : class
             {
                 StatusCode = (int)HttpStatusCode.BadRequest
             };
+
+            logger.LogError("ValidationFilter: Request type is null or not of expected type, expectedType: {expectedTypeName}", typeof(T).Name);
             return;
         }
 
@@ -45,6 +47,8 @@ public class ValidationFilter<T> : IAsyncActionFilter where T : class
             {
                 StatusCode = (int)HttpStatusCode.BadRequest
             };
+
+            logger.LogError("ValidationFilter: Validation failed for request, requestType: {requestTypeName}, errors: {validationErrors}", typeof(T).Name, string.Join(", ", errors));
             return;
         }
 
