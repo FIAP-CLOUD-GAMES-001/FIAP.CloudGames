@@ -11,6 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.Secrets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.Secrets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.17">
