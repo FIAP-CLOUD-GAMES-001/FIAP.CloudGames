@@ -154,11 +154,12 @@ public static class BuilderExtension
     {
         builder.Services.AddSwaggerGen(options =>
         {
+            options.SchemaFilter<EnumSchemaFilter>();
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "FiapCloudGamesApi",
                 Version = "v1",
-                Description = "API Web ASP.NET Core"
+                Description = "API Web ASP.NET Core",
             });
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
