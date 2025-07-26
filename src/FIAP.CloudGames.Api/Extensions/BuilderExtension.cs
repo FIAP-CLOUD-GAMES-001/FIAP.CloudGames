@@ -9,6 +9,7 @@ using FIAP.CloudGames.infrastructure.Repositories;
 using FIAP.CloudGames.Service.Auth;
 using FIAP.CloudGames.Service.Game;
 using FIAP.CloudGames.Service.User;
+using FIAP.CloudGames.Service.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
@@ -194,6 +195,7 @@ public static class BuilderExtension
     private static void ConfigureValidators(this WebApplicationBuilder builder)
     {
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+        builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
     }
     private static void UseJsonFileConfiguration(this WebApplicationBuilder builder)
     {
