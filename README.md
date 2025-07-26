@@ -39,10 +39,13 @@ Desenvolver uma API REST que permita:
 docker-compose up -d
 ```
 
-O docker compose vai subir um banco SqlServer automaticamente no docker com as seguintes configurações de acesso:
+O docker compose vai subir um banco SqlServer e mongoDb automaticamente no docker com as seguintes configurações de acesso:
+
+SqlServer:
 ```bash
 Server=host.docker.internal,1433;Database=CloudGames;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
 ```
+MongoDB:
 ```bash
 mongodb://host.docker.internal:27017/logsdb
 ```
@@ -89,5 +92,5 @@ dotnet run --project ../FIAP.CloudGames.Api
 ## 📝 Notas
 
 - Certifique-se de que o Docker está em execução antes de subir o banco de dados.
-- As migrações são armazenadas em `FIAP.CloudGames.Infrastructure/Migrations`.
+- As migrações são armazenadas em `FIAP.CloudGames.Infrastructure/Migrations` e aplicadas automaticamente ao iniciar o projeto.
 - Para gerar scripts SQL, utilize o comando `dotnet ef migrations script`.
