@@ -1,0 +1,30 @@
+name: Build and Push Image to ACR
+
+on:
+  push:
+    branches: [ "features/pipeline-rob" ]
+
+env:
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+  IMAGE_NAME: "fiap-cloudgames-api"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v3
+
+      - name: "Login to Azure Container Registry"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: "Build and push image to ACR"
+        run: |
+          # ATENÇÃO AQUI: Adicionamos o caminho para o Dockerfile com a flag -f
+          docker build . -f src/FIAP.CloudGames.Api/Dockerfile -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest

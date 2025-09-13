@@ -48,7 +48,7 @@ public static class AppExtension
 
         var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-        var email = config["SeedAdmin:Email"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_EMAIL");
+        var email = config[": 'There is already an object : 'There is already an object named 'Users' in the database.'named 'U: 'There is already an object named 'Users' in the database.'sers' in the database.'SeedAdmin:Email"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_EMAIL");
         var password = config["SeedAdmin:Password"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD");
 
         if (!string.IsNullOrEmpty(email) &&
