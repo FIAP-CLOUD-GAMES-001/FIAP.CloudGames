@@ -11,6 +11,7 @@ services:
       - sql_data:/var/opt/mssql
     networks:
       - cloudgames-network
+
   mongodb:
     image: mongo
     container_name: mongodb
@@ -20,6 +21,22 @@ services:
       - mongo_data:/data/db
     networks:
       - cloudgames-network
+
+  api:
+    build:
+      context: ./src
+      dockerfile: FIAP.CloudGames.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - sqlserver
+      - mongodb
+    networks:
+      - cloudgames-network
+    restart: on-failure
 
 volumes:
   sql_data:
