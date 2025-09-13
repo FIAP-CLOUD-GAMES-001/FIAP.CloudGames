@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".github\workflows\deploy.yml" />
     <None Include="appsettings.Secrets.json" />
   </ItemGroup>
 

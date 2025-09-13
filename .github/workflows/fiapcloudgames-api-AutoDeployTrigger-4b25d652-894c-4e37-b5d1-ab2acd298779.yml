@@ -1,28 +1,26 @@
 name: Trigger auto deployment for fiapcloudgames-api
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
     branches: 
       [ feature/github-actions ]
     paths:
-    - '**'
-    - '.github/workflows/fiapcloudgames-api-AutoDeployTrigger-4b25d652-894c-4e37-b5d1-ab2acd298779.yml'
-
-  # Allow manual trigger 
+      - '**'
+      - '.github/workflows/fiapcloudgames-api-AutoDeployTrigger-4b25d652-894c-4e37-b5d1-ab2acd298779.yml'
   workflow_dispatch:      
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
+      id-token: write
+      contents: read
 
     steps:
-      - name: Checkout to the branch
-        uses: actions/checkout@v2
+      - name: Checkout feature branch
+        uses: actions/checkout@v3
+        with:
+          ref: feature/github-actions
 
       - name: Azure Login
         uses: azure/login@v2
@@ -31,19 +29,19 @@ jobs:
           tenant-id: ${{ secrets.FIAPCLOUDGAMESAPI_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.FIAPCLOUDGAMESAPI_AZURE_SUBSCRIPTION_ID }}
 
+      - name: Build .NET project
+        run: dotnet build FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj -c Release --no-restore
+
+      - name: Run tests
+        run: dotnet test FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj --no-build --verbosity normal
+
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}
-          _dockerfilePathKey_: _dockerfilePath_
-          _targetLabelKey_: _targetLabel_
           registryUrl: fiapcloudgamesacr2.azurecr.io
           registryUsername: ${{ secrets.FIAPCLOUDGAMESAPI_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.FIAPCLOUDGAMESAPI_REGISTRY_PASSWORD }}
           containerAppName: fiapcloudgames-api
           resourceGroup: ACR2
           imageToBuild: fiapcloudgamesacr2.azurecr.io/fiapcloudgames-api:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
-
-
