@@ -1,4 +1,4 @@
-name: Pipeline CD
+name: Pipeline CI
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - "feature/pipelines-ci-cd"
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:

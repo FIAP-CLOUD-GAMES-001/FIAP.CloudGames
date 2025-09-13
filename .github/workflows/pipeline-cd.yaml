@@ -1,4 +1,4 @@
-name: Pipeline CI
+name: Pipeline CD
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - "feature/pipelines-ci-cd"
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }} .
+          docker build -t ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }} -f ./src/FIAP.CloudGames.Api/Dockerfile ./src
 
       - name: Push Docker image
         run: |
