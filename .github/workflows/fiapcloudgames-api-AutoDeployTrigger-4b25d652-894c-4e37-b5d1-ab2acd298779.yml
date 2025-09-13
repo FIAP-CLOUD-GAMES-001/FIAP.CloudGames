@@ -29,8 +29,11 @@ jobs:
           tenant-id: ${{ secrets.FIAPCLOUDGAMESAPI_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.FIAPCLOUDGAMESAPI_AZURE_SUBSCRIPTION_ID }}
 
+      - name: Restore NuGet packages
+        run: dotnet restore src/FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj
+
       - name: Build .NET project
-        run: dotnet build src/FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj -c Release --no-restore
+        run: dotnet build src/FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj -c Release
 
       - name: Run tests
         run: dotnet test src/FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj --no-build --verbosity normal
