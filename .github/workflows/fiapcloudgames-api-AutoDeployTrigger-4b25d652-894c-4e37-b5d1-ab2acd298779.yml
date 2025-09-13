@@ -30,10 +30,10 @@ jobs:
           subscription-id: ${{ secrets.FIAPCLOUDGAMESAPI_AZURE_SUBSCRIPTION_ID }}
 
       - name: Build .NET project
-        run: dotnet build FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj -c Release --no-restore
+        run: dotnet build src/FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj -c Release --no-restore
 
       - name: Run tests
-        run: dotnet test FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj --no-build --verbosity normal
+        run: dotnet test src/FIAP.CloudGames.Api/FIAP.CloudGames.Api.csproj --no-build --verbosity normal
 
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
