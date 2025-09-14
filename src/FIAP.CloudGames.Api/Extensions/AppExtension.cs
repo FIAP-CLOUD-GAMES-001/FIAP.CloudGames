@@ -23,8 +23,8 @@ public static class AppExtension
 
     private static void UseCustomSwagger(this WebApplication app)
     {
-        if (!app.Environment.IsDevelopment())
-            return;
+        //if (!app.Environment.IsDevelopment())
+        //    return;
 
         app.UseSwagger();
 
