@@ -23,6 +23,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Set image tag
+        id: vars
+        run: echo "TAG=$(date +'%Y-%m%d')-${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -32,10 +36,6 @@ jobs:
       - name: Run tests
         run: dotnet test --no-build --configuration Release
 
-      - name: Set image tag
-        id: vars
-        run: echo "TAG=$(date +'%Y-%m%d')-${{ github.run_number }}" >> $GITHUB_ENV
-
       - name: Login Azure Container Registry
         uses: azure/docker-login@v2
         with:
@@ -44,10 +44,8 @@ jobs:
           password: ${{ secrets.ACR_DANILO_PASSWORD }}
 
       - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }} -f ./src/FIAP.CloudGames.Api/Dockerfile ./src
+        run: docker build -t ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }} -f ./src/FIAP.CloudGames.Api/Dockerfile ./src
 
       - name: Push Docker image
-        run: |
-          docker push ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }}
+        run: docker push ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }}
 
