@@ -49,3 +49,16 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }}
 
+      - name: Login Azure Container App
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_DANILO_CREDENTIALS }}
+
+      - name: Deploy Azure Container App
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az containerapp update \
+              --name fiapcloudgamesaca \
+              --resource-group FiapCloudGames \
+              --image ${{ secrets.ACR_DANILO_LOGIN_SERVER }}/fiapcloudgames-api:${{ env.TAG }}
