@@ -3,7 +3,7 @@ name: Trigger auto deployment for fiap-cloud-games-api
 on:
   push:
     branches: 
-      [ feature/github-actions ]
+      [ master ]
     paths:
     - '**'
     - '.github/workflows/fiap-cloud-games-api-AutoDeployTrigger-4c0d9523-e0f3-4fed-afe4-401d7550933f.yml'
