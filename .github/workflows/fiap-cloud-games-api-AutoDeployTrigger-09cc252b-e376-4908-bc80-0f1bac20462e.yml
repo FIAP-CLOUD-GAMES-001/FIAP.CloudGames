@@ -40,13 +40,9 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}
-          _dockerfilePathKey_: _dockerfilePath_
-          _targetLabelKey_: _targetLabel_
           registryUrl: fiapcloudgamesacr.azurecr.io
           registryUsername: ${{ secrets.FIAPCLOUDGAMESAPI_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.FIAPCLOUDGAMESAPI_REGISTRY_PASSWORD }}
           containerAppName: fiap-cloud-games-api
           resourceGroup: rg-fiap-cloudgames
           imageToBuild: fiapcloudgamesacr.azurecr.io/fiap-cloud-games-api:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
