@@ -206,6 +206,7 @@ public static class BuilderExtension
         if (!keysDirectory.Exists)
             keysDirectory.Create();
 
+
         builder.Services.AddDataProtection()
             .PersistKeysToFileSystem(keysDirectory)
             .SetApplicationName("FIAP.CloudGames");
