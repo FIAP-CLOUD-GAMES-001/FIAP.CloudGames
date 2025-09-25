@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using OpenTelemetry.Metrics;
 using Serilog;
 using Serilog.Events;
 using System.Net;
@@ -41,6 +42,7 @@ public static class BuilderExtension
         builder.ConfigureDependencyInjectionService();
         builder.ConfigureHealthChecks();
         builder.ConfigureValidators();
+        builder.ConfigureOpenTelemetry();
     }
 
     private static void ConfigureHealthChecks(this WebApplicationBuilder builder)
@@ -215,5 +217,18 @@ public static class BuilderExtension
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
+    }
+
+    private static void ConfigureOpenTelemetry(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddOpenTelemetry()
+            .WithMetrics(builder =>
+            {
+                builder
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddMeter("MetricsApi.Items")
+                    .AddPrometheusExporter();
+            });
     }
 }

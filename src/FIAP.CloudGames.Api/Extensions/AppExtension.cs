@@ -18,6 +18,7 @@ public static class AppExtension
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers();
         app.GenerateMigrations();
+        app.MapPrometheusScrapingEndpoint();
         app.MapHealthChecks("/health");
     }
 
