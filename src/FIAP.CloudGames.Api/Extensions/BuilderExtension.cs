@@ -24,6 +24,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using Azure.Monitor.OpenTelemetry.Exporter;
 
 namespace FIAP.CloudGames.Api.Extensions;
 
@@ -221,14 +222,18 @@ public static class BuilderExtension
 
     private static void ConfigureOpenTelemetry(this WebApplicationBuilder builder)
     {
+        var teste = builder.Configuration["ApplicationInsights:ConnectionString"];
         builder.Services.AddOpenTelemetry()
-            .WithMetrics(builder =>
+            .WithMetrics(meterBuilder =>
             {
-                builder
+                meterBuilder
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddMeter("MetricsApi.Items")
-                    .AddPrometheusExporter();
+                    .AddPrometheusExporter()
+                    .AddAzureMonitorMetricExporter(o =>
+                    {
+                        o.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+                    });
             });
     }
 }
