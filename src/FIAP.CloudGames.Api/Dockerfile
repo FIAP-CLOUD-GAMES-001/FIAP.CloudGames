@@ -40,11 +40,12 @@ USER root
 
 # --- PASSO NOVO: Instala o agente do New Relic ---
 # Agora este comando tem permissão para rodar.
-RUN apt-get update && apt-get install -y wget && \
-    wget https://download.newrelic.com/dot_net_agent/latest_release/newrelic-agent-linux_10.25.0_amd64.tar.gz -O /tmp/newrelic.tar.gz && \
+RUN apt-get update && apt-get install -y wget ca-certificates && \
+    # --- MUDANÇA AQUI: Usamos o link para a versão mais recente ---
+    wget -O /tmp/newrelic-agent.tar.gz "https://download.newrelic.com/dot_net_agent/latest_release/newrelic-dotnet-agent-linux-x64.tar.gz" && \
     mkdir -p /usr/local/newrelic-agent && \
-    tar -C /usr/local/newrelic-agent -xzf /tmp/newrelic.tar.gz && \
-    rm /tmp/newrelic.tar.gz
+    tar -C /usr/local/newrelic-agent -xzf /tmp/newrelic-agent.tar.gz && \
+    rm /tmp/newrelic-agent.tar.gz
 
 # --- MUDANÇA: Voltamos a ser o usuário sem privilégios ($APP_UID) por segurança ---
 USER $APP_UID
