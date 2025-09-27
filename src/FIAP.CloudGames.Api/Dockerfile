@@ -31,8 +31,27 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "FIAP.CloudGames.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
+# -----------------------------------------------------------------------------------
+# Esta fase é usada na produção E AGORA INCLUI O NEW RELIC
 FROM base AS final
 WORKDIR /app
+
+# --- PASSO NOVO: Instala o agente do New Relic ---
+# Instala ferramentas, baixa o agente, extrai e limpa.
+RUN apt-get update && apt-get install -y wget && \
+    wget https://download.newrelic.com/dot_net_agent/latest_release/newrelic-agent-linux_10.25.0_amd64.tar.gz -O /tmp/newrelic.tar.gz && \
+    mkdir -p /usr/local/newrelic-agent && \
+    tar -C /usr/local/newrelic-agent -xzf /tmp/newrelic.tar.gz && \
+    rm /tmp/newrelic.tar.gz
+
+# Copia os arquivos da sua aplicação já publicados
 COPY --from=publish /app/publish .
+
+# --- PASSO NOVO: Ativa o profiler do New Relic com variáveis de ambiente ---
+# A chave de licença e o nome da app serão fornecidos pela Azure Container Apps
+ENV CORECLR_ENABLE_PROFILING=1 \
+    CORECLR_PROFILER={36032161-FFC0-4B61-B552-3A686F5C71A9} \
+    CORECLR_PROFILER_PATH=/usr/local/newrelic-agent/libNewRelicProfiler.so \
+    NEW_RELIC_HOME=/usr/local/newrelic-agent
+
 ENTRYPOINT ["dotnet", "FIAP.CloudGames.Api.dll"]
