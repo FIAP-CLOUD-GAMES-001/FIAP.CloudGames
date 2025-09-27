@@ -41,6 +41,7 @@ public static class BuilderExtension
         builder.ConfigureDependencyInjectionService();
         builder.ConfigureHealthChecks();
         builder.ConfigureValidators();
+        builder.Services.AddApplicationInsightsTelemetry();
     }
 
     private static void ConfigureHealthChecks(this WebApplicationBuilder builder)
