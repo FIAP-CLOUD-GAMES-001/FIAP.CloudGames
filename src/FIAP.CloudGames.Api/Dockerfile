@@ -39,30 +39,26 @@ WORKDIR /app
 USER root
 
 
-# --- PASSO NOVO: Instala o agente do New Relic via APT (método mais robusto) ---
-RUN apt-get update && apt-get install -y wget ca-certificates gnupg && \
-    # Adiciona a chave de assinatura do repositório da New Relic
-    wget -O /tmp/newrelic-key.gpg https://download.newrelic.com/548C16BF.gpg && \
-    apt-key add /tmp/newrelic-key.gpg && \
-    # Adiciona o repositório da New Relic à lista de fontes do APT
-    echo "deb http://apt.newrelic.com/debian/ bookworm non-free" > /etc/apt/sources.list.d/newrelic.list && \
-    # Atualiza a lista de pacotes novamente e instala o agente
-    apt-get update && \
-    apt-get install -y newrelic-dotnet-agent && \
-    # Limpeza
+
+# --- PASSO NOVO: Instala as dependências e o agente New Relic via download direto ---
+# Garantimos que as ferramentas necessárias estão presentes e usamos o link mais estável.
+RUN apt-get update && apt-get install -y wget ca-certificates && \
+    wget -O /tmp/newrelic-agent.tar.gz "https://download.newrelic.com/dot_net_agent/latest_release/newrelic-dotnet-agent-linux-x64.tar.gz" && \
+    mkdir -p /usr/local/newrelic-agent && \
+    tar -C /usr/local/newrelic-agent -xzf /tmp/newrelic-agent.tar.gz && \
+    rm /tmp/newrelic-agent.tar.gz && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# --- MUDANÇA: Voltamos a ser o usuário sem privilégios ---
+# --- MUDANÇA: Voltamos a ser o usuário sem privilégios ($APP_UID) por segurança ---
 USER $APP_UID
 
 # Copia os arquivos da sua aplicação já publicados
 COPY --from=publish /app/publish .
 
 # Ativa o profiler do New Relic com variáveis de ambiente
-# O caminho de instalação via APT é diferente do manual
 ENV CORECLR_ENABLE_PROFILING=1 \
     CORECLR_PROFILER={36032161-FFC0-4B61-B552-3A686F5C71A9} \
-    CORECLR_PROFILER_PATH=/usr/local/newrelic-dotnet-agent/libNewRelicProfiler.so \
-    NEW_RELIC_HOME=/usr/local/newrelic-dotnet-agent
+    CORECLR_PROFILER_PATH=/usr/local/newrelic-agent/libNewRelicProfiler.so \
+    NEW_RELIC_HOME=/usr/local/newrelic-agent
 
 ENTRYPOINT ["dotnet", "FIAP.CloudGames.Api.dll"]
