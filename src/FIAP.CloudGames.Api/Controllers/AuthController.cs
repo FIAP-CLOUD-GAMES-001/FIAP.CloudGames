@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using FIAP.CloudGames.Api.Extensions;
+﻿﻿using FIAP.CloudGames.Api.Extensions;
 using FIAP.CloudGames.Domain.Interfaces.Services;
 using FIAP.CloudGames.Domain.Models;
 using FIAP.CloudGames.Domain.Requests.Auth;
@@ -14,26 +13,8 @@ namespace FIAP.CloudGames.Api.Controllers;
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status500InternalServerError)]
-public class AuthController : ControllerBase
+public class AuthController(IAuthService service) : ControllerBase
 {
-    private readonly IAuthService _service;
-    private readonly Counter<int> _requestCounter;
-    private readonly Histogram<double> _requestDuration;
-
-    public AuthController(IAuthService service, IMeterFactory meterFactory)
-    {
-        _service = service;
-        var meter = meterFactory.Create("MetricsApi.Items");
-
-        _requestCounter = meter.CreateCounter<int>(
-            "items_requests_total",
-            description: "Total number of requests to items endpoints");
-
-        _requestDuration = meter.CreateHistogram<double>(
-            "items_request_duration_seconds",
-            description: "Duration of requests to items endpoints in seconds");
-    }
-
     /// <summary>
     /// Authenticates a user based on the provided login request and returns the result.
     /// </summary>
@@ -46,16 +27,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        
-        _requestCounter.Add(1, new("method", "GET"), new("endpoint", "/api/Auth/login"));
-
-        var user = await _service.LoginAsync(request);
-
-        stopwatch.Stop();
-        _requestDuration.Record(stopwatch.Elapsed.TotalSeconds, 
-            new("method", "GET"), new("endpoint", "/api/Auth/login"));
-
+        var user = await service.LoginAsync(request);
         return this.ApiOk(user, "Login successful.");
     }
 }

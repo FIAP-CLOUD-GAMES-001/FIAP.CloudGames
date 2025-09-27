@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - "main"
-      - "feature/pipelines-ci-cd"
+      - "feature/monitoramento-grafana"
   pull_request:
     branches:
       - "main"
-      - "feature/pipelines-ci-cd"
+      - "feature/monitoramento-grafana"
 
 jobs:
   build-and-deploy:
