@@ -94,3 +94,20 @@ dotnet run --project ../FIAP.CloudGames.Api
 - Certifique-se de que o Docker está em execução antes de subir o banco de dados.
 - As migrações são armazenadas em `FIAP.CloudGames.Infrastructure/Migrations` e aplicadas automaticamente ao iniciar o projeto.
 - Para gerar scripts SQL, utilize o comando `dotnet ef migrations script`.
+
+---
+
+### ☁️ Deploy e Cloud (Fase 02)
+
+A aplicação também está preparada para **rodar na nuvem** com recursos gerenciados na Azure:
+
+- **Containerização:** A API está dockerizada e a imagem pode ser publicada no **Azure Container Registry**.
+- **Serviço de Container:** Rodando em **Azure Container Apps** para facilitar deploy escalável.
+- **Bancos de Dados:**
+  - SQL Server (relacional)
+  - Cosmos DB (NoSQL)
+- **Monitoramento:**
+  - **Application Insights** para métricas de performance e erros
+  - **Azure Managed Grafana** e **Log Analytics** para dashboards e logs centralizados
+
+> Esta seção é mais informativa; para rodar localmente, use os containers do Docker como descrito acima.
